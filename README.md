@@ -2,6 +2,14 @@
 
 A comprehensive Model Context Protocol (MCP) server for interacting with the Zetrix blockchain through Claude Desktop.
 
+## 💰 Zetrix Currency Information
+
+**Native Coin:** ZETRIX
+- **Main Unit:** ZETRIX
+- **Micro Unit:** ZETA
+- **Conversion:** 1 ZETRIX = 1,000,000 ZETA
+- **Standard Gas Price:** 5 ZETA per transaction
+
 ## 🚀 Quick Start
 
 **New to this?** Start here:
@@ -27,7 +35,7 @@ This MCP server provides comprehensive tools for Zetrix blockchain interaction:
 - **zetrix_get_account_base** - Get basic account info without assets and metadata
 - **zetrix_get_account_assets** - Get asset holdings for an account
 - **zetrix_get_account_metadata** - Get metadata associated with an account
-- **zetrix_get_balance** - Get the ZTX balance of an account
+- **zetrix_get_balance** - Get the ZETRIX balance of an account (returned in both ZETA and ZETRIX)
 - **zetrix_create_keypair** - Generate new key pair (testing only)
 
 ### Block & Ledger Operations

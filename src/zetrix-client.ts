@@ -2,6 +2,20 @@ import axios, { AxiosInstance } from "axios";
 
 export type ZetrixNetwork = "mainnet" | "testnet";
 
+// Zetrix Network Constants
+export const ZETRIX_CONSTANTS = {
+  // Native coin: ZETRIX (main unit)
+  // Micro unit: ZETA
+  // 1 ZETRIX = 1,000,000 ZETA
+  ZETA_PER_ZETRIX: 1000000,
+
+  // Standard gas price for transactions: 5 ZETA
+  GAS_PRICE: "5",
+
+  // Default fee limit (can be adjusted based on transaction complexity)
+  DEFAULT_FEE_LIMIT: "1000000", // 1 ZETRIX = 1,000,000 ZETA
+} as const;
+
 export interface ZetrixAccount {
   address: string;
   balance: string;
@@ -32,8 +46,9 @@ export interface ZetrixTransaction {
 
 export interface ZetrixBalance {
   address: string;
-  balance: string;
-  balanceInZTX: string;
+  balance: string; // Balance in ZETA (micro units)
+  balanceInZETRIX: string; // Balance in ZETRIX (main units)
+  balanceInZTX: string; // Deprecated: use balanceInZETRIX
 }
 
 export interface ZetrixNodeHealth {
@@ -287,13 +302,14 @@ export class ZetrixClient {
   async getBalance(address: string): Promise<ZetrixBalance> {
     try {
       const account = await this.getAccount(address);
-      const balanceInMicroZTX = BigInt(account.balance);
-      const balanceInZTX = Number(balanceInMicroZTX) / 1000000;
+      const balanceInZETA = BigInt(account.balance);
+      const balanceInZETRIX = Number(balanceInZETA) / ZETRIX_CONSTANTS.ZETA_PER_ZETRIX;
 
       return {
         address,
-        balance: account.balance,
-        balanceInZTX: balanceInZTX.toFixed(6),
+        balance: account.balance, // Balance in ZETA (micro units)
+        balanceInZETRIX: balanceInZETRIX.toFixed(6), // Balance in ZETRIX (main units)
+        balanceInZTX: balanceInZETRIX.toFixed(6), // Deprecated: kept for backwards compatibility
       };
     } catch (error) {
       throw new Error(`Failed to get balance: ${error instanceof Error ? error.message : String(error)}`);

@@ -1,7 +1,7 @@
 {
   "$schema": "https://github.com/modelcontextprotocol/registry/raw/main/schema/v1/mcp.schema.json",
   "name": "io.github.zetrix-chain/zetrix-mcp-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Comprehensive MCP server for Zetrix blockchain with 42 tools - HTTP RPC, WebSocket, SDK operations, cryptographic functions, and smart contract development support",
   "icon": "https://raw.githubusercontent.com/Zetrix-Chain/zetrix-mcp-server/master/docs/icon.png",
   "homepage": "https://github.com/Zetrix-Chain/zetrix-mcp-server",
@@ -23,7 +23,7 @@
     {
       "registry_type": "npm",
       "identifier": "zetrix-mcp-server",
-      "version": "1.0.1"
+      "version": "1.0.2"
     }
   ],
   "config": {

@@ -7,12 +7,17 @@ import {
   ListToolsRequestSchema,
   Tool,
 } from "@modelcontextprotocol/sdk/types.js";
-import { ZetrixClient, ZetrixNetwork } from "./zetrix-client.js";
+import { ZetrixClient, ZetrixNetwork, ZETRIX_CONSTANTS } from "./zetrix-client.js";
 import { ZetrixWebSocketClient } from "./zetrix-websocket.js";
 import { ZetrixSDK } from "./zetrix-sdk.js";
 import { ZetrixEncryption } from "./zetrix-encryption.js";
 import { ZetrixContractDocs } from "./zetrix-contract-docs.js";
 
+// Zetrix Network Information:
+// - Native coin: ZETRIX (main unit)
+// - Micro unit: ZETA
+// - Conversion: 1 ZETRIX = 1,000,000 ZETA
+// - Standard gas price: 5 ZETA per transaction
 const ZETRIX_NETWORK = (process.env.ZETRIX_NETWORK || "mainnet") as ZetrixNetwork;
 const ZETRIX_RPC_URL = process.env.ZETRIX_RPC_URL;
 const ZETRIX_WS_URL = process.env.ZETRIX_WS_URL;
@@ -20,7 +25,7 @@ const ZETRIX_WS_URL = process.env.ZETRIX_WS_URL;
 const server = new Server(
   {
     name: "zetrix-mcp-server",
-    version: "1.0.0",
+    version: "1.0.2",
   },
   {
     capabilities: {
@@ -111,7 +116,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_get_balance",
-    description: "Get the ZTX balance of an account",
+    description: "Get the ZETRIX balance of an account. Returns balance in both ZETA (micro units) and ZETRIX (main units). Note: 1 ZETRIX = 1,000,000 ZETA",
     inputSchema: {
       type: "object",
       properties: {
