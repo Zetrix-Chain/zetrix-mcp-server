@@ -696,6 +696,24 @@ const tools: Tool[] = [
     },
   },
   {
+    name: "zetrix_contract_init_dev_environment",
+    description: "Initialize a new Zetrix smart contract development environment using create-zetrix-tool. This creates a complete project structure with testing framework, examples, and utilities.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        contractName: {
+          type: "string",
+          description: "Name of the contract project to create (alphanumeric and hyphens only)",
+        },
+        workingDirectory: {
+          type: "string",
+          description: "Directory where to create the project (defaults to current directory)",
+        },
+      },
+      required: ["contractName"],
+    },
+  },
+  {
     name: "zetrix_contract_get_testing_guide",
     description: "Get guide on testing Zetrix smart contracts with TEST_INVOKE and TEST_QUERY",
     inputSchema: {
@@ -1381,6 +1399,65 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
+
+      case "zetrix_contract_init_dev_environment": {
+        const { contractName, workingDirectory } = args as {
+          contractName: string;
+          workingDirectory?: string;
+        };
+
+        // Validate contract name
+        if (!/^[a-zA-Z0-9-_]+$/.test(contractName)) {
+          throw new Error("Contract name must contain only alphanumeric characters, hyphens, and underscores");
+        }
+
+        const { execSync } = await import("child_process");
+
+        try {
+          const cwd = workingDirectory || process.cwd();
+          const command = `npx -y create-zetrix-tool ${contractName}`;
+
+          // Execute the command
+          const output = execSync(command, {
+            cwd,
+            encoding: 'utf-8',
+            stdio: 'pipe'
+          });
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: `✅ Successfully initialized Zetrix contract development environment!
+
+Project: ${contractName}
+Location: ${cwd}/${contractName}
+
+Output:
+${output}
+
+Next steps:
+1. cd ${contractName}
+2. Review the generated contract templates
+3. Start developing your smart contract
+4. Use the testing framework to test your contract
+
+The project includes:
+- Contract templates
+- Testing framework (TEST_INVOKE, TEST_QUERY)
+- Example contracts (ZTP20, ZTP721, etc.)
+- Utilities and helpers
+- Documentation
+
+Repository: https://github.com/armmarov/zetrix-contract-development-tool`,
+              },
+            ],
+          };
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          throw new Error(`Failed to initialize development environment: ${errorMessage}`);
+        }
       }
 
       default:
