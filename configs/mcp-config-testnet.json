@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "zetrix-testnet": {
+      "command": "node",
+      "args": [
+        "D:\\Projects\\mcp\\zetrix\\dist\\index.js"
+      ],
+      "env": {
+        "ZETRIX_NETWORK": "testnet"
+      }
+    }
+  }
+}

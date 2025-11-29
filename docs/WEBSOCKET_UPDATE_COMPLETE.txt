@@ -1,0 +1,139 @@
+╔════════════════════════════════════════════════════════════════════╗
+║                                                                    ║
+║     ✅ WEBSOCKET URLS UPDATED SUCCESSFULLY! ✅                     ║
+║                                                                    ║
+╚════════════════════════════════════════════════════════════════════╝
+
+📡 NEW WEBSOCKET CONFIGURATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Mainnet:  ws://node-ws.zetrix.com
+Testnet:  ws://test-node-ws.zetrix.com
+
+✅ WHAT WAS UPDATED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. ✓ Source code (src/index.ts)
+2. ✓ Environment example (.env.example)
+3. ✓ Main README.md
+4. ✓ QUICKSTART.md
+5. ✓ SETUP_COMPLETE.md
+6. ✓ configs/README.md
+7. ✓ WEBSOCKET_URLS.md
+8. ✓ EXAMPLES.md
+9. ✓ INSTALLATION_SUMMARY.txt
+10. ✓ Compiled code (dist/index.js)
+
+📝 CHANGES SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BEFORE:
+  Mainnet:  ws://node.zetrix.com:7053
+  Testnet:  ws://test-node.zetrix.com:7053
+
+AFTER:
+  Mainnet:  ws://node-ws.zetrix.com
+  Testnet:  ws://test-node-ws.zetrix.com
+
+Changes:
+  • Updated domain names to -ws variants
+  • Removed explicit :7053 port (using default)
+  • All documentation synchronized
+
+✅ VERIFICATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Source Code (src/index.ts):
+  ✓ mainnet: "ws://node-ws.zetrix.com"
+  ✓ testnet: "ws://test-node-ws.zetrix.com"
+
+Compiled Code (dist/index.js):
+  ✓ mainnet: "ws://node-ws.zetrix.com"
+  ✓ testnet: "ws://test-node-ws.zetrix.com"
+
+Documentation:
+  ✓ All files updated with new URLs
+  ✓ Examples use correct endpoints
+  ✓ Configuration guides updated
+
+🚀 WHAT YOU NEED TO DO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NOTHING! The changes are already built and ready.
+
+If you've already configured Claude Desktop:
+  → Restart Claude Desktop to use new WebSocket URLs
+
+If you haven't configured yet:
+  → Run: npm run setup
+  → Follow the wizard
+  → Restart Claude Desktop
+
+💡 TESTING WEBSOCKET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+In Claude Desktop, ask:
+  "Connect to the Zetrix WebSocket"
+
+Claude will use:
+  • Mainnet: ws://node-ws.zetrix.com
+  • Testnet: ws://test-node-ws.zetrix.com
+
+🔧 CONFIGURATION EXAMPLES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Mainnet (in Claude Desktop config):
+{
+  "env": {
+    "ZETRIX_NETWORK": "mainnet"
+  }
+}
+→ Uses: ws://node-ws.zetrix.com
+
+Testnet:
+{
+  "env": {
+    "ZETRIX_NETWORK": "testnet"
+  }
+}
+→ Uses: ws://test-node-ws.zetrix.com
+
+Custom URL:
+{
+  "env": {
+    "ZETRIX_WS_URL": "ws://custom.example.com"
+  }
+}
+→ Uses: Your custom URL
+
+📚 DOCUMENTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+For detailed WebSocket information, see:
+  • WEBSOCKET_URLS.md - Complete WebSocket guide
+  • README.md - Network endpoints
+  • EXAMPLES.md - WebSocket usage examples
+
+🎯 WEBSOCKET FEATURES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+All 5 WebSocket tools work with new URLs:
+
+  ✓ zetrix_ws_connect          - Connect and register
+  ✓ zetrix_ws_submit_transaction - Real-time submission
+  ✓ zetrix_ws_subscribe_tx     - Monitor addresses
+  ✓ zetrix_ws_disconnect       - Disconnect
+  ✓ zetrix_ws_status          - Check status
+
+✅ SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ WebSocket URLs updated to official endpoints
+✓ All code and documentation synchronized
+✓ Project rebuilt with new URLs
+✓ Ready to use immediately
+✓ No action required from you
+
+The Zetrix MCP server now uses the correct official WebSocket endpoints!
+
+Happy exploring! 🚀

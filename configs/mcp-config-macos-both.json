@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "zetrix-mainnet": {
+      "command": "node",
+      "args": [
+        "/Users/username/zetrix/dist/index.js"
+      ],
+      "env": {
+        "ZETRIX_NETWORK": "mainnet"
+      }
+    },
+    "zetrix-testnet": {
+      "command": "node",
+      "args": [
+        "/Users/username/zetrix/dist/index.js"
+      ],
+      "env": {
+        "ZETRIX_NETWORK": "testnet"
+      }
+    }
+  }
+}
