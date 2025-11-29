@@ -1507,7 +1507,7 @@ Repository: https://github.com/armmarov/zetrix-contract-development-tool`,
 
         try {
           // Generate contract files
-          const { files, summary } = zetrixContractGenerator.generate(options);
+          const { files, summary, classDiagram } = zetrixContractGenerator.generate(options);
 
           // Write files to disk
           zetrixContractGenerator.writeFiles(files);
