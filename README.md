@@ -91,6 +91,7 @@ Powered by the official [zetrix-encryption-nodejs](https://github.com/Zetrix-Cha
 Comprehensive contract development support based on [zetrix-contract-development-tool](https://github.com/armmarov/zetrix-contract-development-tool):
 
 - **zetrix_contract_init_dev_environment** - Initialize new contract development project with templates and testing framework
+- **zetrix_contract_generate_advanced** - Generate multi-class contracts with interfaces, libraries, utils, and comprehensive test specs
 - **zetrix_contract_get_chain_functions** - Documentation for all Chain object functions (storage, transactions, queries)
 - **zetrix_contract_get_utils_functions** - Documentation for all Utils object functions (math, crypto, validation)
 - **zetrix_contract_get_structure_guide** - Guide on ES5 contract patterns, classes, and inheritance

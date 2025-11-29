@@ -12,6 +12,7 @@ import { ZetrixWebSocketClient } from "./zetrix-websocket.js";
 import { ZetrixSDK } from "./zetrix-sdk.js";
 import { ZetrixEncryption } from "./zetrix-encryption.js";
 import { ZetrixContractDocs } from "./zetrix-contract-docs.js";
+import { ZetrixContractGenerator, ContractGenerationOptions } from "./zetrix-contract-generator.js";
 
 // Zetrix Network Information:
 // - Native coin: ZETRIX (main unit)
@@ -38,6 +39,7 @@ const zetrixClient = new ZetrixClient(ZETRIX_RPC_URL || ZETRIX_NETWORK);
 const zetrixSDK = new ZetrixSDK(ZETRIX_RPC_URL || ZETRIX_NETWORK);
 const zetrixEncryption = new ZetrixEncryption();
 const zetrixContractDocs = new ZetrixContractDocs();
+const zetrixContractGenerator = new ZetrixContractGenerator();
 
 // WebSocket URL mapping
 const WS_NETWORK_URLS: Record<ZetrixNetwork, string> = {
@@ -711,6 +713,46 @@ const tools: Tool[] = [
         },
       },
       required: ["contractName"],
+    },
+  },
+  {
+    name: "zetrix_contract_generate_advanced",
+    description: "Generate advanced multi-class Zetrix smart contract with interfaces, libraries, utilities, main contract, and comprehensive test specs. Supports complex architectures with inheritance, composition, and modular design.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        contractName: {
+          type: "string",
+          description: "Name of the main contract (e.g., 'StableCoin', 'NFTMarketplace')",
+        },
+        contractType: {
+          type: "string",
+          enum: ["token", "nft", "defi", "governance", "marketplace", "custom"],
+          description: "Type of contract to generate",
+        },
+        features: {
+          type: "array",
+          items: {
+            type: "string",
+            enum: ["pausable", "ownable", "roles", "upgradeable", "whitelist", "blacklist", "timelock", "oracle"],
+          },
+          description: "Advanced features to include",
+        },
+        tokenStandard: {
+          type: "string",
+          enum: ["ZTP20", "ZTP721", "ZTP1155"],
+          description: "Token standard (required if contractType is 'token' or 'nft')",
+        },
+        includeTests: {
+          type: "boolean",
+          description: "Generate comprehensive test specifications (default: true)",
+        },
+        outputDirectory: {
+          type: "string",
+          description: "Directory to output the contract files (defaults to current directory)",
+        },
+      },
+      required: ["contractName", "contractType"],
     },
   },
   {
@@ -1457,6 +1499,76 @@ Repository: https://github.com/armmarov/zetrix-contract-development-tool`,
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : String(error);
           throw new Error(`Failed to initialize development environment: ${errorMessage}`);
+        }
+      }
+
+      case "zetrix_contract_generate_advanced": {
+        const options = args as unknown as ContractGenerationOptions;
+
+        try {
+          // Generate contract files
+          const { files, summary } = zetrixContractGenerator.generate(options);
+
+          // Write files to disk
+          zetrixContractGenerator.writeFiles(files);
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: `✅ Successfully generated advanced ${options.contractName} contract!
+
+${summary}
+
+Generated contract architecture:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📁 ${options.contractName}Interface.js
+   ↳ Contract API definition
+   ↳ Method signatures for main and query functions
+
+📁 ${options.contractName}Lib.js
+   ↳ Reusable utility library
+   ↳ Validation, storage, and math utilities
+   ↳ Can be imported by other contracts
+
+📁 ${options.contractName}Utils.js
+   ↳ Feature-specific modules
+   ↳ Ownership, pausable, whitelist, blacklist
+   ↳ Modular and extensible design
+
+📁 ${options.contractName}.js
+   ↳ Main contract implementation
+   ↳ init(), main(), query() entry points
+   ↳ Business logic and routing
+${options.includeTests !== false ? `
+📁 ${options.contractName}Tests.md
+   ↳ Comprehensive test specifications
+   ↳ TEST_INVOKE and TEST_QUERY examples
+   ↳ Security and edge case tests
+` : ''}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Contract Type: ${options.contractType.toUpperCase()}
+${options.tokenStandard ? `Token Standard: ${options.tokenStandard}` : ''}
+Features: ${options.features?.join(", ") || "Basic"}
+
+You can now:
+1. Review and customize the generated contract files
+2. Add your business logic to ${options.contractName}.js
+3. Run the test specifications
+4. Deploy to Zetrix blockchain
+
+💡 Tip: The modular architecture allows you to:
+   - Extend functionality by adding new utils modules
+   - Reuse the library in other contracts
+   - Test each module independently
+   - Maintain clean separation of concerns`,
+              },
+            ],
+          };
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          throw new Error(`Failed to generate contract: ${errorMessage}`);
         }
       }
 

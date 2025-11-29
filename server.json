@@ -2,7 +2,7 @@
   "$schema": "https://github.com/modelcontextprotocol/registry/raw/main/schema/v1/mcp.schema.json",
   "name": "io.github.zetrix-chain/zetrix-mcp-server",
   "version": "1.0.2",
-  "description": "Comprehensive MCP server for Zetrix blockchain with 43 tools - HTTP RPC, WebSocket, SDK operations, cryptographic functions, and smart contract development support",
+  "description": "Comprehensive MCP server for Zetrix blockchain with 44 tools - HTTP RPC, WebSocket, SDK operations, cryptographic functions, and advanced smart contract generation",
   "icon": "https://raw.githubusercontent.com/Zetrix-Chain/zetrix-mcp-server/master/docs/icon.png",
   "homepage": "https://github.com/Zetrix-Chain/zetrix-mcp-server",
   "license": "MIT",
@@ -50,7 +50,7 @@
   },
   "capabilities": {
     "tools": {
-      "count": 43,
+      "count": 44,
       "categories": [
         "http_rpc",
         "websocket",
@@ -226,6 +226,10 @@
     {
       "name": "zetrix_contract_init_dev_environment",
       "description": "Initialize Zetrix contract development environment"
+    },
+    {
+      "name": "zetrix_contract_generate_advanced",
+      "description": "Generate advanced multi-class smart contract with interfaces, libraries, and tests"
     }
   ],
   "tags": [
