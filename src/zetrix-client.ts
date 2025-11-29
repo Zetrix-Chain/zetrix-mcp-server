@@ -387,7 +387,13 @@ export class ZetrixClient {
         );
       }
 
-      return response.data.result.metadatas || [];
+      // If a specific key is requested, the result is keyed by that key name
+      // Otherwise it returns metadatas array
+      const result = response.data.result;
+      if (key && result[key]) {
+        return [result[key]];
+      }
+      return result.metadatas || [];
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(`Failed to get account metadata: ${error.message}`);
