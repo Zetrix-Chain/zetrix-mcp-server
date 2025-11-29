@@ -264,15 +264,16 @@ export class ZetrixClient {
       }
 
       const tx = response.data.result.transactions[0];
+      const txData = tx.transaction || tx;
       return {
         hash: tx.hash || hash,
         blockNumber: tx.ledger_seq || 0,
         timestamp: tx.close_time || 0,
-        sourceAddress: tx.source_address || "",
-        feeLimit: tx.fee_limit || "0",
-        gasPrice: tx.gas_price || "0",
-        nonce: tx.nonce || 0,
-        operations: tx.operations,
+        sourceAddress: txData.source_address || "",
+        feeLimit: txData.fee_limit || "0",
+        gasPrice: txData.gas_price || "0",
+        nonce: txData.nonce || 0,
+        operations: txData.operations,
         status: tx.error_code === 0 ? "success" : "failed",
       };
     } catch (error) {
