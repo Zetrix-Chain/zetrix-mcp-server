@@ -1,11 +1,20 @@
 {
   "name": "zetrix-mcp-server",
   "version": "1.0.0",
-  "description": "MCP server for Zetrix blockchain interaction",
+  "description": "MCP server for Zetrix blockchain - HTTP RPC, WebSocket, SDK, Crypto tools, and Smart Contract development support",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
     "zetrix-mcp-server": "dist/index.js"
+  },
+  "files": [
+    "dist/**/*",
+    "configs/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
   },
   "scripts": {
     "build": "tsc",
@@ -13,6 +22,7 @@
     "start": "node dist/index.js",
     "watch": "tsc --watch",
     "prepare": "npm run build",
+    "prepublishOnly": "npm run build && npm test",
     "test": "node tests/test-server.js",
     "setup": "node scripts/setup-claude.js",
     "test:mainnet": "ZETRIX_NETWORK=mainnet node tests/test-server.js",
@@ -25,12 +35,33 @@
   },
   "keywords": [
     "mcp",
+    "mcp-server",
+    "model-context-protocol",
     "zetrix",
     "blockchain",
-    "model-context-protocol"
+    "cryptocurrency",
+    "web3",
+    "smart-contracts",
+    "websocket",
+    "rpc",
+    "sdk",
+    "encryption",
+    "claude",
+    "ai"
   ],
-  "author": "Dr. Ammar Abdullah",
-  "email": "dev@zetrix.com",
+  "author": {
+    "name": "Dr. Ammar Abdullah",
+    "email": "dev@zetrix.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zetrix-Chain/zetrix-mcp-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Zetrix-Chain/zetrix-mcp-server/issues"
+  },
+  "homepage": "https://github.com/Zetrix-Chain/zetrix-mcp-server#readme",
+  "mcpName": "io.github.zetrix-chain/zetrix-mcp-server",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.23.0",

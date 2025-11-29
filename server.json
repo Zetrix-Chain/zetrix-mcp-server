@@ -1,0 +1,239 @@
+{
+  "$schema": "https://github.com/modelcontextprotocol/registry/raw/main/schema/v1/mcp.schema.json",
+  "name": "io.github.zetrix-chain/zetrix-mcp-server",
+  "version": "1.0.0",
+  "description": "Comprehensive MCP server for Zetrix blockchain with 42 tools - HTTP RPC, WebSocket, SDK operations, cryptographic functions, and smart contract development support",
+  "icon": "https://raw.githubusercontent.com/Zetrix-Chain/zetrix-mcp-server/master/docs/icon.png",
+  "homepage": "https://github.com/Zetrix-Chain/zetrix-mcp-server",
+  "license": "MIT",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/Zetrix-Chain/zetrix-mcp-server"
+  },
+  "author": {
+    "name": "Dr. Ammar Abdullah",
+    "email": "dev@zetrix.com"
+  },
+  "categories": [
+    "blockchain",
+    "web3",
+    "cryptocurrency"
+  ],
+  "packages": [
+    {
+      "registry_type": "npm",
+      "identifier": "zetrix-mcp-server",
+      "version": "1.0.0"
+    }
+  ],
+  "config": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "zetrix-mcp-server"
+    ],
+    "env": {
+      "ZETRIX_NETWORK": {
+        "description": "Network to connect to (mainnet or testnet)",
+        "default": "mainnet",
+        "required": false
+      },
+      "ZETRIX_RPC_URL": {
+        "description": "Custom Zetrix HTTP RPC URL (optional, overrides ZETRIX_NETWORK)",
+        "required": false
+      },
+      "ZETRIX_WS_URL": {
+        "description": "Custom Zetrix WebSocket URL (optional, overrides ZETRIX_NETWORK)",
+        "required": false
+      }
+    }
+  },
+  "capabilities": {
+    "tools": {
+      "count": 42,
+      "categories": [
+        "http_rpc",
+        "websocket",
+        "sdk",
+        "cryptography",
+        "smart_contracts"
+      ]
+    },
+    "resources": false,
+    "prompts": false
+  },
+  "tools": [
+    {
+      "name": "zetrix_check_health",
+      "description": "Check if the Zetrix node is healthy and responding"
+    },
+    {
+      "name": "zetrix_get_account",
+      "description": "Get account information by address"
+    },
+    {
+      "name": "zetrix_get_balance",
+      "description": "Get account balance by address"
+    },
+    {
+      "name": "zetrix_get_account_assets",
+      "description": "Get account assets including tokens"
+    },
+    {
+      "name": "zetrix_get_account_metadata",
+      "description": "Get account metadata"
+    },
+    {
+      "name": "zetrix_get_account_base",
+      "description": "Get account base information"
+    },
+    {
+      "name": "zetrix_get_nonce",
+      "description": "Get account nonce for transaction building"
+    },
+    {
+      "name": "zetrix_get_block",
+      "description": "Get block information by block number"
+    },
+    {
+      "name": "zetrix_get_latest_block",
+      "description": "Get the latest block information"
+    },
+    {
+      "name": "zetrix_get_ledger",
+      "description": "Get ledger/blockchain information"
+    },
+    {
+      "name": "zetrix_get_transaction",
+      "description": "Get transaction details by hash"
+    },
+    {
+      "name": "zetrix_get_transaction_history",
+      "description": "Get transaction history for an address"
+    },
+    {
+      "name": "zetrix_get_transaction_cache",
+      "description": "Get cached transaction information"
+    },
+    {
+      "name": "zetrix_call_contract",
+      "description": "Call a smart contract method (read-only)"
+    },
+    {
+      "name": "zetrix_ws_connect",
+      "description": "Connect to Zetrix WebSocket for real-time updates"
+    },
+    {
+      "name": "zetrix_ws_submit_transaction",
+      "description": "Submit a transaction via WebSocket"
+    },
+    {
+      "name": "zetrix_ws_subscribe_tx",
+      "description": "Subscribe to transaction updates for specific addresses"
+    },
+    {
+      "name": "zetrix_ws_disconnect",
+      "description": "Disconnect from WebSocket"
+    },
+    {
+      "name": "zetrix_ws_status",
+      "description": "Check WebSocket connection status"
+    },
+    {
+      "name": "zetrix_sdk_create_account",
+      "description": "Create a new Zetrix account with keypair"
+    },
+    {
+      "name": "zetrix_sdk_get_balance",
+      "description": "Get account balance using SDK"
+    },
+    {
+      "name": "zetrix_sdk_is_activated",
+      "description": "Check if an account is activated"
+    },
+    {
+      "name": "zetrix_sdk_get_nonce",
+      "description": "Get account nonce using SDK"
+    },
+    {
+      "name": "zetrix_sdk_call_contract",
+      "description": "Call smart contract using SDK"
+    },
+    {
+      "name": "zetrix_sdk_invoke_contract",
+      "description": "Invoke smart contract method using SDK"
+    },
+    {
+      "name": "zetrix_crypto_generate_keypair",
+      "description": "Generate a new Ed25519 keypair"
+    },
+    {
+      "name": "zetrix_crypto_get_public_key",
+      "description": "Derive public key from private key"
+    },
+    {
+      "name": "zetrix_crypto_get_address",
+      "description": "Derive Zetrix address from public key"
+    },
+    {
+      "name": "zetrix_crypto_is_valid_private_key",
+      "description": "Validate a private key"
+    },
+    {
+      "name": "zetrix_crypto_is_valid_public_key",
+      "description": "Validate a public key"
+    },
+    {
+      "name": "zetrix_crypto_is_valid_address",
+      "description": "Validate a Zetrix address"
+    },
+    {
+      "name": "zetrix_crypto_sign",
+      "description": "Sign a message with private key"
+    },
+    {
+      "name": "zetrix_crypto_verify",
+      "description": "Verify a signature"
+    },
+    {
+      "name": "zetrix_crypto_encrypt_key",
+      "description": "Encrypt a private key with password"
+    },
+    {
+      "name": "zetrix_crypto_decrypt_key",
+      "description": "Decrypt an encrypted private key"
+    },
+    {
+      "name": "zetrix_contract_get_chain_functions",
+      "description": "Get documentation for Chain object functions"
+    },
+    {
+      "name": "zetrix_contract_get_utils_functions",
+      "description": "Get documentation for Utils object functions"
+    },
+    {
+      "name": "zetrix_contract_get_structure_guide",
+      "description": "Get smart contract structure guide"
+    },
+    {
+      "name": "zetrix_contract_get_token_standard",
+      "description": "Get token standard documentation (ZTP20/ZTP721/ZTP1155)"
+    },
+    {
+      "name": "zetrix_contract_get_testing_guide",
+      "description": "Get smart contract testing guide"
+    }
+  ],
+  "tags": [
+    "blockchain",
+    "zetrix",
+    "web3",
+    "cryptocurrency",
+    "smart-contracts",
+    "websocket",
+    "rpc",
+    "sdk",
+    "encryption",
+    "cryptography"
+  ]
+}
