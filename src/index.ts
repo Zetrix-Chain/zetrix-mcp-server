@@ -717,7 +717,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_contract_generate_advanced",
-    description: "Generate advanced multi-class Zetrix smart contract with interfaces, libraries, utilities, main contract, and comprehensive test specs. Supports complex architectures with inheritance, composition, and modular design.",
+    description: "Generate advanced multi-class Zetrix smart contract with interfaces, libraries, utilities, main contract, and comprehensive test specs. **CRITICAL: You MUST call zetrix_contract_init_dev_environment FIRST to create the project structure using npx create-zetrix-tool, then use this tool to generate the specific contract files.** Supports complex architectures with inheritance, composition, and modular design.",
     inputSchema: {
       type: "object",
       properties: {
@@ -1506,6 +1506,28 @@ Repository: https://github.com/armmarov/zetrix-contract-development-tool`,
         const options = args as unknown as ContractGenerationOptions;
 
         try {
+          // CRITICAL: Check if project exists, if not, create it with npx create-zetrix-tool
+          const { execSync } = await import("child_process");
+          const { existsSync } = await import("fs");
+          const { join } = await import("path");
+
+          const projectPath = join(options.outputDirectory || process.cwd(), options.contractName);
+
+          if (!existsSync(projectPath)) {
+            // Project doesn't exist, create it with official tool
+            const cwd = options.outputDirectory || process.cwd();
+            const command = `npx -y create-zetrix-tool ${options.contractName}`;
+
+            console.log(`📦 Initializing project with: ${command}`);
+            execSync(command, {
+              cwd,
+              encoding: 'utf-8',
+              stdio: 'inherit'
+            });
+
+            console.log(`✅ Project structure created at ${projectPath}`);
+          }
+
           // Generate contract files
           const { files, summary, classDiagram } = zetrixContractGenerator.generate(options);
 
