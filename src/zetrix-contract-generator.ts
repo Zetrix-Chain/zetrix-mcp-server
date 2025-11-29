@@ -512,21 +512,22 @@ classDiagram
 
 `;
 
-    // Generate the library object
-    code += `var ${className} = (function() {\n`;
-    code += `  // Private constants and variables\n`;
+    // Generate the library using ES5 constructor pattern
+    code += `const ${className} = function () {\n`;
+    code += `  const self = this;\n\n`;
+    code += `  // Private constants\n`;
 
     // Private properties
     for (const prop of classInfo.properties.filter(p => p.visibility === "private")) {
       code += `  const ${prop.name} = "${prop.name.toLowerCase().replace(/_/g, "-")}";\n`;
     }
 
-    code += `\n  // Private methods (defined first)\n`;
+    code += `\n  // Private helper methods (defined first)\n`;
 
     // Private methods
     for (const method of classInfo.methods.filter(m => m.visibility === "private")) {
       const params = method.params.map(p => p.name).join(", ");
-      code += `  function ${method.name}(${params}) {\n`;
+      code += `  const ${method.name} = function (${params}) {\n`;
       code += `    // ${method.description}\n`;
 
       // Add method implementation based on method name
@@ -565,20 +566,17 @@ classDiagram
         code += `    throw "Not implemented: ${method.name}";\n`;
       }
 
-      code += `  }\n\n`;
+      code += `  };\n\n`;
     }
 
-    code += `  // Public API\n`;
-    code += `  return {\n`;
+    code += `  // Public API methods\n`;
 
     // Public methods
     const publicMethods = classInfo.methods.filter(m => m.visibility === "public");
-    for (let i = 0; i < publicMethods.length; i++) {
-      const method = publicMethods[i];
+    for (const method of publicMethods) {
       const params = method.params.map(p => p.name).join(", ");
-      const isLast = i === publicMethods.length - 1;
 
-      code += `    ${method.name}: function(${params}) {\n`;
+      code += `  self.${method.name} = function (${params}) {\n`;
       code += `      // ${method.description}\n`;
 
       // Add implementation
@@ -649,17 +647,10 @@ classDiagram
         code += `      throw "Not implemented: ${method.name}";\n`;
       }
 
-      code += `    }${isLast ? '' : ','}\n`;
+      code += `  };\n`;
     }
 
-    code += `  };\n`;
-    code += `})();\n\n`;
-
-    // Export
-    code += `// Export for testing\n`;
-    code += `if (typeof module !== 'undefined' && module.exports) {\n`;
-    code += `  module.exports = ${className};\n`;
-    code += `}\n`;
+    code += `};\n`;
 
     return code;
   }
@@ -1275,9 +1266,9 @@ deploy();
       });
     }
 
-    // Generate main contract
+    // Generate main contract (MUST be in contracts/ root, NOT specs/)
     files.push({
-      path: join(outputDirectory, `contracts/specs/${contractName}.js`),
+      path: join(outputDirectory, `contracts/${contractName}.js`),
       content: this.generateMainContract(options, classes),
       type: "contract"
     });

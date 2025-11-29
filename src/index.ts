@@ -1528,6 +1528,10 @@ Repository: https://github.com/armmarov/zetrix-contract-development-tool`,
             console.log(`✅ Project structure created at ${projectPath}`);
           }
 
+          // Update outputDirectory to point to the project folder
+          // so files are written inside the created project
+          options.outputDirectory = projectPath;
+
           // Generate contract files
           const { files, summary, classDiagram } = zetrixContractGenerator.generate(options);
 
