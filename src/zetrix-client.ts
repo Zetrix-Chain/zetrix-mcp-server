@@ -169,11 +169,8 @@ export class ZetrixClient {
 
   async getAccount(address: string): Promise<ZetrixAccount> {
     try {
-      const response = await this.client.post("", {
-        method: "getAccount",
-        params: {
-          address,
-        },
+      const response = await this.client.get("/getAccount", {
+        params: { address },
       });
 
       if (response.data.error_code !== 0) {
@@ -199,11 +196,8 @@ export class ZetrixClient {
 
   async getBlock(blockNumber: number): Promise<ZetrixBlock> {
     try {
-      const response = await this.client.post("", {
-        method: "getBlockInfo",
-        params: {
-          block_number: blockNumber,
-        },
+      const response = await this.client.get("/getLedger", {
+        params: { seq: blockNumber },
       });
 
       if (response.data.error_code !== 0) {
@@ -231,9 +225,8 @@ export class ZetrixClient {
 
   async getLatestBlock(): Promise<ZetrixBlock> {
     try {
-      const response = await this.client.post("", {
-        method: "getBlockNumber",
-      });
+      // Get latest ledger without seq parameter
+      const response = await this.client.get("/getLedger");
 
       if (response.data.error_code !== 0) {
         throw new Error(
@@ -241,8 +234,15 @@ export class ZetrixClient {
         );
       }
 
-      const latestBlockNumber = response.data.result.header.seq;
-      return this.getBlock(latestBlockNumber);
+      const block = response.data.result.header;
+      return {
+        blockNumber: block.seq,
+        closeTime: block.close_time || 0,
+        hash: block.hash || "",
+        prevHash: block.previous_hash || "",
+        txCount: block.tx_count || 0,
+        transactions: response.data.result.transactions,
+      };
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(`Failed to get latest block: ${error.message}`);
@@ -253,11 +253,8 @@ export class ZetrixClient {
 
   async getTransaction(hash: string): Promise<ZetrixTransaction> {
     try {
-      const response = await this.client.post("", {
-        method: "getTransactionHistory",
-        params: {
-          hash,
-        },
+      const response = await this.client.get("/getTransactionHistory", {
+        params: { hash },
       });
 
       if (response.data.error_code !== 0) {
