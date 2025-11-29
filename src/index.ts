@@ -717,7 +717,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_contract_generate_advanced",
-    description: "Generate advanced multi-class Zetrix smart contract with interfaces, libraries, utilities, main contract, and comprehensive test specs. **CRITICAL: You MUST call zetrix_contract_init_dev_environment FIRST to create the project structure using npx create-zetrix-tool, then use this tool to generate the specific contract files.** Supports complex architectures with inheritance, composition, and modular design.",
+    description: "Generate advanced multi-class Zetrix smart contract with interfaces, libraries, utilities, main contract, and comprehensive test specs. **MANDATORY WORKFLOW: (1) First call zetrix_contract_init_dev_environment with contractName (e.g., 'CertificateContract'). (2) Then call this tool with the SAME contractName and outputDirectory set to './{contractName}'. Calling this tool WITHOUT initializing the project first will result in an error.** Supports complex architectures with inheritance, composition, and modular design.",
     inputSchema: {
       type: "object",
       properties: {
@@ -1506,31 +1506,23 @@ Repository: https://github.com/armmarov/zetrix-contract-development-tool`,
         const options = args as unknown as ContractGenerationOptions;
 
         try {
-          // CRITICAL: Check if project exists, if not, create it with npx create-zetrix-tool
-          const { execSync } = await import("child_process");
           const { existsSync } = await import("fs");
           const { join } = await import("path");
 
-          const projectPath = join(options.outputDirectory || process.cwd(), options.contractName);
+          // If outputDirectory is not specified, assume current directory
+          // User should have already called zetrix_contract_init_dev_environment
+          const outputDir = options.outputDirectory || process.cwd();
 
-          if (!existsSync(projectPath)) {
-            // Project doesn't exist, create it with official tool
-            const cwd = options.outputDirectory || process.cwd();
-            const command = `npx -y create-zetrix-tool ${options.contractName}`;
-
-            console.log(`📦 Initializing project with: ${command}`);
-            execSync(command, {
-              cwd,
-              encoding: 'utf-8',
-              stdio: 'inherit'
-            });
-
-            console.log(`✅ Project structure created at ${projectPath}`);
+          // Check if we're in a valid Zetrix project (has package.json with zetrix tools)
+          const packageJsonPath = join(outputDir, 'package.json');
+          if (!existsSync(packageJsonPath)) {
+            throw new Error(
+              `No Zetrix project found at ${outputDir}.\n\n` +
+              `Please initialize the project first using:\n` +
+              `zetrix_contract_init_dev_environment with contractName: "${options.contractName}"\n\n` +
+              `Then call zetrix_contract_generate_advanced with outputDirectory: "./${options.contractName}"`
+            );
           }
-
-          // Update outputDirectory to point to the project folder
-          // so files are written inside the created project
-          options.outputDirectory = projectPath;
 
           // Generate contract files
           const { files, summary, classDiagram } = zetrixContractGenerator.generate(options);
