@@ -12,7 +12,7 @@
     "configs/**/*",
     "README.md",
     "LICENSE",
-    "ZETRIX_CONTRACT_DEVELOPMENT_RULES.md"
+    "docs/ZETRIX_CONTRACT_DEVELOPMENT_RULES.md"
   ],
   "engines": {
     "node": ">=18.0.0"

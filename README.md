@@ -25,7 +25,7 @@ npm install -g zetrix-mcp-server
 **Guides:**
 - [QUICKSTART.md](docs/QUICKSTART.md) — Get set up in 5 minutes
 - [EXAMPLES.md](docs/EXAMPLES.md) — Learn through 20+ examples
-- [TEST_REPORT.md](TEST_REPORT.md) — Comprehensive test results for all 55 tools
+- [TEST_REPORT.md](docs/TEST_REPORT.md) — Comprehensive test results for all 55 tools
 
 ## Features (55 Tools)
 
@@ -227,7 +227,12 @@ zetrix-mcp-server/
 │   ├── test-server.js            # HTTP RPC tests
 │   ├── test-sdk.js               # SDK tests
 │   └── test-encryption.js        # Crypto tests
-├── TEST_REPORT.md                # Comprehensive test results
+├── docs/
+│   ├── TEST_REPORT.md            # Comprehensive test results
+│   ├── DEVELOPER_GUIDE.md        # Developer documentation
+│   ├── ZETRIX_CONTRACT_DEVELOPMENT_RULES.md
+│   ├── QUICKSTART.md             # 5-minute setup guide
+│   └── EXAMPLES.md               # 20+ usage examples
 └── dist/                         # Compiled output
 ```
 
