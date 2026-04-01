@@ -357,9 +357,9 @@ export class ZetrixSDK {
     await this.initSDK();
 
     try {
-      const operation = this.sdk.operation.contractInvokeByGasOperation({
+      const operation = await this.sdk.operation.contractInvokeByGasOperation({
         contractAddress: params.contractAddress,
-        amount: params.amount,
+        gasAmount: params.amount,
         input: params.input,
         metadata: params.metadata,
       });
@@ -723,7 +723,7 @@ export class ZetrixSDK {
     await this.initSDK();
 
     try {
-      const operation = this.sdk.operation.contractInvokeByAssetOperation({
+      const operation = await this.sdk.operation.contractInvokeByAssetOperation({
         contractAddress: params.contractAddress,
         sourceAddress: params.sourceAddress,
         code: params.code,
@@ -761,10 +761,12 @@ export class ZetrixSDK {
     await this.initSDK();
 
     try {
-      const operation = this.sdk.operation.contractUpgradeOperation({
+      const operation = await this.sdk.operation.contractUpgradeOperation({
         contractAddress: params.contractAddress,
         sourceAddress: params.sourceAddress,
         payload: params.payload,
+        sPayload: true,
+        sOwner: false,
         metadata: params.metadata,
       });
 

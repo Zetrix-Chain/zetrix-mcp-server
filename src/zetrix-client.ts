@@ -376,7 +376,7 @@ export class ZetrixClient {
         );
       }
 
-      return response.data.result.assets || [];
+      return response.data.result?.assets || [];
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(`Failed to get account assets: ${error.message}`);
@@ -398,14 +398,17 @@ export class ZetrixClient {
       const response = await this.client.get("/getAccountMetaData", { params });
 
       if (response.data.error_code !== 0) {
+        // No metadata found is not an error
+        if (response.data.error_code === 2 || response.data.error_code === 4) {
+          return [];
+        }
         throw new Error(
           response.data.error_desc || `API Error: ${response.data.error_code}`
         );
       }
 
-      // If a specific key is requested, the result is keyed by that key name
-      // Otherwise it returns metadatas array
       const result = response.data.result;
+      if (!result) return [];
       if (key && result[key]) {
         return [result[key]];
       }
@@ -450,6 +453,11 @@ export class ZetrixClient {
       if (limit) params.limit = limit;
 
       const response = await this.client.get("/getTransactionCache", { params });
+
+      // error_code 4 means no pending transactions, return empty result
+      if (response.data.error_code === 4) {
+        return response.data.result || { total_count: 0, transactions: [] };
+      }
 
       if (response.data.error_code !== 0) {
         throw new Error(
@@ -506,7 +514,7 @@ export class ZetrixClient {
         );
       }
 
-      return response.data.result;
+      return response.data.results || [];
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(`Failed to execute multi query: ${error.message}`);
