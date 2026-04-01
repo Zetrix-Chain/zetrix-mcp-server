@@ -113,7 +113,7 @@ export interface ZetrixTransactionBlob {
 
 export interface ZetrixSubmitResult {
   hash: string;
-  results: any[];
+  success_count: number;
 }
 
 export interface ZetrixContractCallResult {
@@ -540,17 +540,29 @@ export class ZetrixClient {
   ): Promise<ZetrixSubmitResult> {
     try {
       const response = await this.client.post("/submitTransaction", {
-        transaction_blob: transactionBlob,
-        signatures,
+        items: [
+          {
+            transaction_blob: transactionBlob,
+            signatures,
+          },
+        ],
       });
 
-      if (response.data.error_code !== 0) {
+      if (!response.data.results || response.data.results.length === 0) {
+        throw new Error("Empty response from submitTransaction");
+      }
+
+      const txResult = response.data.results[0];
+      if (txResult.error_code !== 0) {
         throw new Error(
-          response.data.error_desc || `API Error: ${response.data.error_code}`
+          txResult.error_desc || `API Error: ${txResult.error_code}`
         );
       }
 
-      return response.data.result;
+      return {
+        hash: txResult.hash,
+        success_count: response.data.success_count,
+      };
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(`Failed to submit transaction: ${error.message}`);

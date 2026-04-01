@@ -162,7 +162,11 @@ export class ZetrixEncryption {
     await this.initEncryption();
 
     try {
-      const signData = this.signature.sign(message, privateKey);
+      // Convert hex string to byte buffer before signing, matching SDK behavior.
+      // The SDK's _signBlob does: Buffer.from(blob, 'hex') -> Uint8Array -> sign(bytes)
+      const messageBytes = Buffer.from(message, 'hex');
+      const uint8ArrayData = new Uint8Array(messageBytes);
+      const signData = this.signature.sign(uint8ArrayData, privateKey);
       const publicKey = this.KeyPair.getEncPublicKey(privateKey);
 
       return {
@@ -191,7 +195,8 @@ export class ZetrixEncryption {
     await this.initEncryption();
 
     try {
-      return this.signature.verify(message, signData, publicKey);
+      const messageBytes = new Uint8Array(Buffer.from(message, 'hex'));
+      return this.signature.verify(messageBytes, signData, publicKey);
     } catch (error) {
       throw new Error(
         `Failed to verify signature: ${error instanceof Error ? error.message : String(error)}`

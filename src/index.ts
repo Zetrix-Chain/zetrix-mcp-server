@@ -509,7 +509,7 @@ const tools: Tool[] = [
         },
         amount: {
           type: "string",
-          description: "Amount of ZTX to send with invocation (in micro-ZTX)",
+          description: "Amount of ZETRIX to send with invocation (in ZETA, 1 ZETRIX = 1,000,000 ZETA)",
         },
         input: {
           type: "string",
@@ -521,6 +521,442 @@ const tools: Tool[] = [
         },
       },
       required: ["sourceAddress", "privateKey", "contractAddress", "amount", "input"],
+    },
+  },
+
+  {
+    name: "zetrix_sdk_send_gas",
+    description: "Send native ZTX (gas) to another address using the SDK",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceAddress: {
+          type: "string",
+          description: "The sender's Zetrix address",
+        },
+        privateKey: {
+          type: "string",
+          description: "The sender's private key for signing",
+        },
+        destAddress: {
+          type: "string",
+          description: "The recipient's Zetrix address",
+        },
+        amount: {
+          type: "string",
+          description: "Amount to send in ZETA (1 ZETRIX = 1,000,000 ZETA)",
+        },
+        gasPrice: {
+          type: "string",
+          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+        },
+        feeLimit: {
+          type: "string",
+          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+        },
+        metadata: {
+          type: "string",
+          description: "Optional transaction metadata/description",
+        },
+      },
+      required: ["sourceAddress", "privateKey", "destAddress", "amount"],
+    },
+  },
+
+  {
+    name: "zetrix_sdk_activate_account",
+    description: "Activate a new account on the Zetrix blockchain with an initial balance",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceAddress: {
+          type: "string",
+          description: "The account address funding the activation",
+        },
+        privateKey: {
+          type: "string",
+          description: "Private key of the source account",
+        },
+        destAddress: {
+          type: "string",
+          description: "The new account address to activate",
+        },
+        initBalance: {
+          type: "string",
+          description: "Initial balance in ZETA to fund the new account (1 ZETRIX = 1,000,000 ZETA)",
+        },
+        gasPrice: {
+          type: "string",
+          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+        },
+        feeLimit: {
+          type: "string",
+          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+        },
+        metadata: {
+          type: "string",
+          description: "Optional transaction metadata",
+        },
+      },
+      required: ["sourceAddress", "privateKey", "destAddress", "initBalance"],
+    },
+  },
+  {
+    name: "zetrix_sdk_set_metadata",
+    description: "Set a key-value metadata entry on an account",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceAddress: {
+          type: "string",
+          description: "The account address to set metadata on",
+        },
+        privateKey: {
+          type: "string",
+          description: "Private key of the account",
+        },
+        key: {
+          type: "string",
+          description: "Metadata key (max 1024 characters)",
+        },
+        value: {
+          type: "string",
+          description: "Metadata value (max 256KB)",
+        },
+        version: {
+          type: "string",
+          description: "Optional metadata version for optimistic locking",
+        },
+        deleteFlag: {
+          type: "boolean",
+          description: "If true, delete this metadata key",
+        },
+        gasPrice: {
+          type: "string",
+          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+        },
+        feeLimit: {
+          type: "string",
+          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+        },
+        metadata: {
+          type: "string",
+          description: "Optional transaction metadata",
+        },
+      },
+      required: ["sourceAddress", "privateKey", "key", "value"],
+    },
+  },
+  {
+    name: "zetrix_sdk_set_privilege",
+    description: "Set account privilege including master weight, tx threshold, and signers",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceAddress: {
+          type: "string",
+          description: "The account address to modify privileges on",
+        },
+        privateKey: {
+          type: "string",
+          description: "Private key of the account",
+        },
+        masterWeight: {
+          type: "string",
+          description: "New master weight for the account",
+        },
+        txThreshold: {
+          type: "string",
+          description: "New transaction threshold",
+        },
+        signers: {
+          type: "array",
+          description: "Array of signer objects with address and weight",
+          items: {
+            type: "object",
+            properties: {
+              address: { type: "string" },
+              weight: { type: "number" },
+            },
+          },
+        },
+        typeThresholds: {
+          type: "array",
+          description: "Array of operation type thresholds",
+          items: {
+            type: "object",
+            properties: {
+              type: { type: "number" },
+              threshold: { type: "number" },
+            },
+          },
+        },
+        gasPrice: {
+          type: "string",
+          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+        },
+        feeLimit: {
+          type: "string",
+          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+        },
+        metadata: {
+          type: "string",
+          description: "Optional transaction metadata",
+        },
+      },
+      required: ["sourceAddress", "privateKey"],
+    },
+  },
+  {
+    name: "zetrix_sdk_issue_asset",
+    description: "Issue a new custom asset/token on the Zetrix blockchain",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceAddress: {
+          type: "string",
+          description: "The issuer's account address",
+        },
+        privateKey: {
+          type: "string",
+          description: "Private key of the issuer",
+        },
+        code: {
+          type: "string",
+          description: "Asset code/symbol (e.g. 'MYT')",
+        },
+        assetAmount: {
+          type: "string",
+          description: "Total amount of tokens to issue",
+        },
+        gasPrice: {
+          type: "string",
+          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+        },
+        feeLimit: {
+          type: "string",
+          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+        },
+        metadata: {
+          type: "string",
+          description: "Optional transaction metadata",
+        },
+      },
+      required: ["sourceAddress", "privateKey", "code", "assetAmount"],
+    },
+  },
+  {
+    name: "zetrix_sdk_send_asset",
+    description: "Transfer a custom asset/token to another address",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceAddress: {
+          type: "string",
+          description: "The sender's account address",
+        },
+        privateKey: {
+          type: "string",
+          description: "Private key of the sender",
+        },
+        destAddress: {
+          type: "string",
+          description: "The recipient's account address",
+        },
+        code: {
+          type: "string",
+          description: "Asset code/symbol",
+        },
+        issuer: {
+          type: "string",
+          description: "The original issuer's address of the asset",
+        },
+        assetAmount: {
+          type: "string",
+          description: "Amount of tokens to transfer",
+        },
+        gasPrice: {
+          type: "string",
+          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+        },
+        feeLimit: {
+          type: "string",
+          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+        },
+        metadata: {
+          type: "string",
+          description: "Optional transaction metadata",
+        },
+      },
+      required: ["sourceAddress", "privateKey", "destAddress", "code", "issuer", "assetAmount"],
+    },
+  },
+  {
+    name: "zetrix_sdk_create_contract",
+    description: "Deploy a new smart contract on the Zetrix blockchain",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceAddress: {
+          type: "string",
+          description: "The deployer's account address",
+        },
+        privateKey: {
+          type: "string",
+          description: "Private key of the deployer",
+        },
+        payload: {
+          type: "string",
+          description: "The smart contract source code (JavaScript)",
+        },
+        initBalance: {
+          type: "string",
+          description: "Initial balance in ZETA to fund the contract account",
+        },
+        initInput: {
+          type: "string",
+          description: "JSON string passed to the contract's init function",
+        },
+        gasPrice: {
+          type: "string",
+          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+        },
+        feeLimit: {
+          type: "string",
+          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+        },
+        metadata: {
+          type: "string",
+          description: "Optional transaction metadata",
+        },
+      },
+      required: ["sourceAddress", "privateKey", "payload"],
+    },
+  },
+  {
+    name: "zetrix_sdk_invoke_contract_by_asset",
+    description: "Invoke a smart contract with an asset transfer",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceAddress: {
+          type: "string",
+          description: "The caller's account address",
+        },
+        privateKey: {
+          type: "string",
+          description: "Private key of the caller",
+        },
+        contractAddress: {
+          type: "string",
+          description: "The contract address to invoke",
+        },
+        code: {
+          type: "string",
+          description: "Asset code/symbol to send with invocation",
+        },
+        issuer: {
+          type: "string",
+          description: "The asset issuer's address",
+        },
+        assetAmount: {
+          type: "string",
+          description: "Amount of asset to send with invocation",
+        },
+        input: {
+          type: "string",
+          description: "JSON string with method and params for the contract",
+        },
+        gasPrice: {
+          type: "string",
+          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+        },
+        feeLimit: {
+          type: "string",
+          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+        },
+        metadata: {
+          type: "string",
+          description: "Optional transaction metadata",
+        },
+      },
+      required: ["sourceAddress", "privateKey", "contractAddress"],
+    },
+  },
+  {
+    name: "zetrix_sdk_upgrade_contract",
+    description: "Upgrade an existing smart contract's code",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceAddress: {
+          type: "string",
+          description: "The contract owner's account address",
+        },
+        privateKey: {
+          type: "string",
+          description: "Private key of the contract owner",
+        },
+        contractAddress: {
+          type: "string",
+          description: "The contract address to upgrade",
+        },
+        payload: {
+          type: "string",
+          description: "The new smart contract source code (JavaScript)",
+        },
+        gasPrice: {
+          type: "string",
+          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+        },
+        feeLimit: {
+          type: "string",
+          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+        },
+        metadata: {
+          type: "string",
+          description: "Optional transaction metadata",
+        },
+      },
+      required: ["sourceAddress", "privateKey", "contractAddress", "payload"],
+    },
+  },
+  {
+    name: "zetrix_sdk_create_log",
+    description: "Create an event log on the Zetrix blockchain",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceAddress: {
+          type: "string",
+          description: "The account address creating the log",
+        },
+        privateKey: {
+          type: "string",
+          description: "Private key of the account",
+        },
+        topic: {
+          type: "string",
+          description: "Log topic/event name",
+        },
+        data: {
+          type: "string",
+          description: "Log data content",
+        },
+        gasPrice: {
+          type: "string",
+          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+        },
+        feeLimit: {
+          type: "string",
+          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+        },
+        metadata: {
+          type: "string",
+          description: "Optional transaction metadata",
+        },
+      },
+      required: ["sourceAddress", "privateKey", "topic", "data"],
     },
   },
 
@@ -1232,6 +1668,183 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
               text: JSON.stringify(result, null, 2),
             },
           ],
+        };
+      }
+
+      case "zetrix_sdk_send_gas": {
+        if (!args) {
+          throw new Error("Missing arguments");
+        }
+        const sendGasResult = await zetrixSDK.sendGas({
+          sourceAddress: args.sourceAddress as string,
+          privateKey: args.privateKey as string,
+          destAddress: args.destAddress as string,
+          amount: args.amount as string,
+          gasPrice: args.gasPrice as string | undefined,
+          feeLimit: args.feeLimit as string | undefined,
+          metadata: args.metadata as string | undefined,
+        });
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(sendGasResult, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "zetrix_sdk_activate_account": {
+        if (!args) throw new Error("Missing arguments");
+        const activateResult = await zetrixSDK.activateAccount({
+          sourceAddress: args.sourceAddress as string,
+          privateKey: args.privateKey as string,
+          destAddress: args.destAddress as string,
+          initBalance: args.initBalance as string,
+          gasPrice: args.gasPrice as string | undefined,
+          feeLimit: args.feeLimit as string | undefined,
+          metadata: args.metadata as string | undefined,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(activateResult, null, 2) }],
+        };
+      }
+
+      case "zetrix_sdk_set_metadata": {
+        if (!args) throw new Error("Missing arguments");
+        const setMetadataResult = await zetrixSDK.setMetadata({
+          sourceAddress: args.sourceAddress as string,
+          privateKey: args.privateKey as string,
+          key: args.key as string,
+          value: args.value as string,
+          version: args.version as string | undefined,
+          deleteFlag: args.deleteFlag as boolean | undefined,
+          gasPrice: args.gasPrice as string | undefined,
+          feeLimit: args.feeLimit as string | undefined,
+          metadata: args.metadata as string | undefined,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(setMetadataResult, null, 2) }],
+        };
+      }
+
+      case "zetrix_sdk_set_privilege": {
+        if (!args) throw new Error("Missing arguments");
+        const setPrivilegeResult = await zetrixSDK.setPrivilege({
+          sourceAddress: args.sourceAddress as string,
+          privateKey: args.privateKey as string,
+          masterWeight: args.masterWeight as string | undefined,
+          txThreshold: args.txThreshold as string | undefined,
+          signers: args.signers as Array<{ address: string; weight: number }> | undefined,
+          typeThresholds: args.typeThresholds as Array<{ type: number; threshold: number }> | undefined,
+          gasPrice: args.gasPrice as string | undefined,
+          feeLimit: args.feeLimit as string | undefined,
+          metadata: args.metadata as string | undefined,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(setPrivilegeResult, null, 2) }],
+        };
+      }
+
+      case "zetrix_sdk_issue_asset": {
+        if (!args) throw new Error("Missing arguments");
+        const issueResult = await zetrixSDK.issueAsset({
+          sourceAddress: args.sourceAddress as string,
+          privateKey: args.privateKey as string,
+          code: args.code as string,
+          assetAmount: args.assetAmount as string,
+          gasPrice: args.gasPrice as string | undefined,
+          feeLimit: args.feeLimit as string | undefined,
+          metadata: args.metadata as string | undefined,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(issueResult, null, 2) }],
+        };
+      }
+
+      case "zetrix_sdk_send_asset": {
+        if (!args) throw new Error("Missing arguments");
+        const sendAssetResult = await zetrixSDK.sendAsset({
+          sourceAddress: args.sourceAddress as string,
+          privateKey: args.privateKey as string,
+          destAddress: args.destAddress as string,
+          code: args.code as string,
+          issuer: args.issuer as string,
+          assetAmount: args.assetAmount as string,
+          gasPrice: args.gasPrice as string | undefined,
+          feeLimit: args.feeLimit as string | undefined,
+          metadata: args.metadata as string | undefined,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(sendAssetResult, null, 2) }],
+        };
+      }
+
+      case "zetrix_sdk_create_contract": {
+        if (!args) throw new Error("Missing arguments");
+        const createContractResult = await zetrixSDK.createContract({
+          sourceAddress: args.sourceAddress as string,
+          privateKey: args.privateKey as string,
+          payload: args.payload as string,
+          initBalance: args.initBalance as string | undefined,
+          initInput: args.initInput as string | undefined,
+          gasPrice: args.gasPrice as string | undefined,
+          feeLimit: args.feeLimit as string | undefined,
+          metadata: args.metadata as string | undefined,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(createContractResult, null, 2) }],
+        };
+      }
+
+      case "zetrix_sdk_invoke_contract_by_asset": {
+        if (!args) throw new Error("Missing arguments");
+        const invokeByAssetResult = await zetrixSDK.invokeContractByAsset({
+          sourceAddress: args.sourceAddress as string,
+          privateKey: args.privateKey as string,
+          contractAddress: args.contractAddress as string,
+          code: args.code as string | undefined,
+          issuer: args.issuer as string | undefined,
+          assetAmount: args.assetAmount as string | undefined,
+          input: args.input as string | undefined,
+          gasPrice: args.gasPrice as string | undefined,
+          feeLimit: args.feeLimit as string | undefined,
+          metadata: args.metadata as string | undefined,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(invokeByAssetResult, null, 2) }],
+        };
+      }
+
+      case "zetrix_sdk_upgrade_contract": {
+        if (!args) throw new Error("Missing arguments");
+        const upgradeResult = await zetrixSDK.upgradeContract({
+          sourceAddress: args.sourceAddress as string,
+          privateKey: args.privateKey as string,
+          contractAddress: args.contractAddress as string,
+          payload: args.payload as string,
+          gasPrice: args.gasPrice as string | undefined,
+          feeLimit: args.feeLimit as string | undefined,
+          metadata: args.metadata as string | undefined,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(upgradeResult, null, 2) }],
+        };
+      }
+
+      case "zetrix_sdk_create_log": {
+        if (!args) throw new Error("Missing arguments");
+        const logResult = await zetrixSDK.createLog({
+          sourceAddress: args.sourceAddress as string,
+          privateKey: args.privateKey as string,
+          topic: args.topic as string,
+          data: args.data as string,
+          gasPrice: args.gasPrice as string | undefined,
+          feeLimit: args.feeLimit as string | undefined,
+          metadata: args.metadata as string | undefined,
+        });
+        return {
+          content: [{ type: "text", text: JSON.stringify(logResult, null, 2) }],
         };
       }
 
