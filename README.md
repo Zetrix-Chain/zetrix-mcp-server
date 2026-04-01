@@ -139,9 +139,31 @@ All transaction tools use `evaluateFee` (testTransaction) for dynamic gas pricin
 | `ZETRIX_RPC_URL` | Custom HTTP RPC endpoint (overrides network default) | — |
 | `ZETRIX_WS_URL` | Custom WebSocket endpoint (overrides network default) | — |
 
-### Claude Desktop / Claude Code
+### Claude Code (CLI)
 
-Add to your MCP configuration:
+Add the MCP server directly from the command line:
+
+**Mainnet:**
+```bash
+claude mcp add zetrix-mainnet -s user -- npx -y zetrix-mcp-server -e ZETRIX_NETWORK=mainnet
+```
+
+**Testnet:**
+```bash
+claude mcp add zetrix-testnet -s user -- npx -y zetrix-mcp-server -e ZETRIX_NETWORK=testnet
+```
+
+**With custom RPC and WebSocket URLs:**
+```bash
+claude mcp add zetrix-testnet -s user -- npx -y zetrix-mcp-server \
+  -e ZETRIX_NETWORK=testnet \
+  -e ZETRIX_RPC_URL=https://your-node.example.com \
+  -e ZETRIX_WS_URL=wss://your-ws-node.example.com
+```
+
+### Claude Desktop / JSON Config
+
+Add to your MCP configuration file:
 
 **Testnet:**
 ```json
