@@ -6,9 +6,6 @@
 // Note: zetrix-sdk-nodejs is a CommonJS module, we need to handle it carefully
 import { ZetrixNetwork } from "./zetrix-client.js";
 
-// SDK will be loaded dynamically
-let ZtxSDK: any = null;
-
 const NETWORK_HOSTS: Record<ZetrixNetwork, string> = {
   mainnet: "node.zetrix.com",
   testnet: "test-node.zetrix.com",
@@ -40,6 +37,8 @@ export interface ZetrixContractInvokeParams {
   contractAddress: string;
   amount: string;
   input: string;
+  gasPrice?: string;
+  feeLimit?: string;
   metadata?: string;
 }
 
@@ -375,6 +374,8 @@ export class ZetrixSDK {
         sourceAddress: params.sourceAddress,
         privateKey: params.privateKey,
         operation: operation.result.operation,
+        gasPrice: params.gasPrice,
+        feeLimit: params.feeLimit,
         metadata: params.metadata,
       });
     } catch (error) {

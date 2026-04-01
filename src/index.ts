@@ -515,6 +515,14 @@ const tools: Tool[] = [
           type: "string",
           description: "JSON string with method and params",
         },
+        gasPrice: {
+          type: "string",
+          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+        },
+        feeLimit: {
+          type: "string",
+          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+        },
         metadata: {
           type: "string",
           description: "Optional transaction description",
@@ -1659,6 +1667,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           contractAddress: args.contractAddress as string,
           amount: args.amount as string,
           input: args.input as string,
+          gasPrice: args.gasPrice as string | undefined,
+          feeLimit: args.feeLimit as string | undefined,
           metadata: args.metadata as string | undefined,
         });
         return {
