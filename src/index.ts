@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+// Redirect console.log to stderr to prevent SDK debug output
+// from corrupting the MCP stdio protocol on stdout
+const originalLog = console.log;
+console.log = console.error;
+
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
