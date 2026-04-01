@@ -26,7 +26,7 @@ const ZETRIX_WS_URL = process.env.ZETRIX_WS_URL;
 const server = new Server(
   {
     name: "zetrix-mcp-server",
-    version: "1.0.13",
+    version: "1.0.14",
   },
   {
     capabilities: {

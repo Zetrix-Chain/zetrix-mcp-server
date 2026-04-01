@@ -1,7 +1,7 @@
 {
   "name": "zetrix-mcp-server",
-  "version": "1.0.13",
-  "description": "MCP server for Zetrix blockchain with 44 tools - HTTP RPC, WebSocket, SDK, Crypto tools, and advanced smart contract generation",
+  "version": "1.0.14",
+  "description": "MCP server for Zetrix blockchain with 55 tools - HTTP RPC, WebSocket (protobuf), SDK transactions, Crypto, and smart contract development",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
