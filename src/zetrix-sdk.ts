@@ -114,6 +114,7 @@ export interface ZetrixContractCreateParams {
   payload: string;
   initBalance?: string;
   initInput?: string;
+  owner?: string;
   gasPrice?: string;
   feeLimit?: string;
   metadata?: string;
@@ -136,7 +137,8 @@ export interface ZetrixContractUpgradeParams {
   sourceAddress: string;
   privateKey: string;
   contractAddress: string;
-  payload: string;
+  payload?: string;
+  owner?: string;
   gasPrice?: string;
   feeLimit?: string;
   metadata?: string;
@@ -692,6 +694,7 @@ export class ZetrixSDK {
         payload: params.payload,
         initBalance: params.initBalance,
         initInput: params.initInput,
+        owner: params.owner,
         metadata: params.metadata,
       });
 
@@ -761,14 +764,17 @@ export class ZetrixSDK {
     await this.initSDK();
 
     try {
-      const operation = await this.sdk.operation.contractUpgradeOperation({
+      const operationParams: any = {
         contractAddress: params.contractAddress,
         sourceAddress: params.sourceAddress,
-        payload: params.payload,
-        sPayload: true,
-        sOwner: false,
+        sPayload: !!params.payload,
+        sOwner: !!params.owner,
         metadata: params.metadata,
-      });
+      };
+      if (params.payload) operationParams.payload = params.payload;
+      if (params.owner) operationParams.owner = params.owner;
+
+      const operation = await this.sdk.operation.contractUpgradeOperation(operationParams);
 
       if (operation.errorCode !== 0) {
         throw new Error(

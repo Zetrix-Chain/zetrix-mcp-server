@@ -821,6 +821,10 @@ const tools: Tool[] = [
           type: "string",
           description: "JSON string passed to the contract's init function",
         },
+        owner: {
+          type: "string",
+          description: "Optional contract owner address (required for future upgrades)",
+        },
         gasPrice: {
           type: "string",
           description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
@@ -889,17 +893,17 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_sdk_upgrade_contract",
-    description: "Upgrade an existing smart contract's code",
+    description: "Upgrade a smart contract's code and/or owner. Provide payload to upgrade code, owner to change owner, or both.",
     inputSchema: {
       type: "object",
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The contract owner's account address",
+          description: "The current contract owner's account address",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the contract owner",
+          description: "Private key of the current contract owner",
         },
         contractAddress: {
           type: "string",
@@ -907,7 +911,11 @@ const tools: Tool[] = [
         },
         payload: {
           type: "string",
-          description: "The new smart contract source code (JavaScript)",
+          description: "New smart contract source code (provide to upgrade code)",
+        },
+        owner: {
+          type: "string",
+          description: "New owner address (provide to transfer ownership)",
         },
         gasPrice: {
           type: "string",
@@ -922,7 +930,7 @@ const tools: Tool[] = [
           description: "Optional transaction metadata",
         },
       },
-      required: ["sourceAddress", "privateKey", "contractAddress", "payload"],
+      required: ["sourceAddress", "privateKey", "contractAddress"],
     },
   },
   {
@@ -1793,6 +1801,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           payload: args.payload as string,
           initBalance: args.initBalance as string | undefined,
           initInput: args.initInput as string | undefined,
+          owner: args.owner as string | undefined,
           gasPrice: args.gasPrice as string | undefined,
           feeLimit: args.feeLimit as string | undefined,
           metadata: args.metadata as string | undefined,
@@ -1827,7 +1836,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           sourceAddress: args.sourceAddress as string,
           privateKey: args.privateKey as string,
           contractAddress: args.contractAddress as string,
-          payload: args.payload as string,
+          payload: args.payload as string | undefined,
+          owner: args.owner as string | undefined,
           gasPrice: args.gasPrice as string | undefined,
           feeLimit: args.feeLimit as string | undefined,
           metadata: args.metadata as string | undefined,
