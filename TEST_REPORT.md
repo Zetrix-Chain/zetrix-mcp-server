@@ -18,7 +18,7 @@
 | SDK Transactions | 11 | 0 | 0 | 11 |
 | Crypto | 8 | 0 | 0 | 8 |
 | Smart Contract Dev | 6 | 0 | 1 | 7 |
-| **Total** | **53** | **0** | **1** | **55** |
+| **Total** | **54** | **0** | **1** | **55** |
 
 ---
 
@@ -64,7 +64,7 @@
 ### #9 zetrix_get_account_assets
 - **Status:** PASS
 - **Input:** `address: ZTX3RHaPmjknsxSTPaPzD8M1A7nU26vKzwqf3`
-- **Result:** Returns `[]` when no assets (fixed: was crashing on null result)
+- **Result:** Returns `[]` when no assets
 - **Bug Fixed:** Added null-safe check `result?.assets || []`
 
 ### #10 zetrix_get_account_metadata
@@ -123,25 +123,26 @@
 
 ## 3. WebSocket Tools (5/5 PASS)
 
+> Protocol: **Protobuf binary encoding** (WsMessage wrapper)  
 > Tested with `ZETRIX_WS_URL=ws://18.143.233.37:7053`  
 > Default URLs: `wss://ws-node.zetrix.com` (mainnet), `wss://test-ws-node.zetrix.com` (testnet)
 
 ### #19 zetrix_ws_connect
 - **Status:** PASS
-- **Protocol:** Protobuf binary (WsMessage wrapper → ChainHello payload)
-- **Result:** CHAIN_HELLO response received, `registered=true`
+- **Protocol:** Encodes ChainHello via protobuf, wraps in WsMessage, sends binary
+- **Result:** CHAIN_HELLO response decoded, `registered=true`
 
 ### #20 zetrix_ws_submit_transaction
 - **Status:** PASS
 - **Input:** transactionBlob (hex) + signatures
-- **Protocol:** WsMessage → TransactionEnv (protobuf encoded)
-- **Result:** CHAIN_TX_STATUS response with `status=CONFIRMED`
+- **Protocol:** Decodes blob to Transaction protobuf, wraps in TransactionEnv, encodes as WsMessage
+- **Result:** CHAIN_TX_STATUS response: `status=CONFIRMED`
 - **TX Hash:** `8653fa062d62a84adcb0cabde0047d7c98b37b519d0b0151495a78482d8b94c9`
 
 ### #21 zetrix_ws_subscribe_tx
 - **Status:** PASS
 - **Input:** `addresses: ['ZTX3RHaPmjknsxSTPaPzD8M1A7nU26vKzwqf3']`
-- **Protocol:** WsMessage → ChainSubscribeTx (protobuf encoded)
+- **Protocol:** Encodes ChainSubscribeTx via protobuf
 - **Result:** `{ type: 19, success: true }`
 
 ### #22 zetrix_ws_disconnect
@@ -150,7 +151,8 @@
 
 ### #23 zetrix_ws_status
 - **Status:** PASS
-- **Result:** Returns `{ connected: bool, wsUrl: string }`
+- **Before connect:** `{ connected: false, registered: false }`
+- **After connect:** `{ connected: true, registered: true }`
 
 ---
 
@@ -225,7 +227,7 @@
 
 ### #36 zetrix_sdk_create_contract
 - **Status:** PASS
-- **Input:** Simple hello/greet contract
+- **Input:** Simple hello/greet contract (without owner)
 - **TX Hash:** `5d7b0b68cfdad275baebb872ddb7bc9d6ffb207036be96bbb3f5d5bb0e5984d7`
 - **Contract Address:** `ZTX3FD8om1vaAF4QUArNATKZFBPv4Z7Re8DSq`
 
@@ -236,14 +238,44 @@
 - **Bug Fixed:** Needs `await` on generator-based operation
 
 ### #38 zetrix_sdk_upgrade_contract
-- **Status:** PASS (code works correctly)
-- **Node Response:** "contract has no owner, cannot be upgraded" — expected since test contract was deployed without owner
+- **Status:** PASS
+- **Tested:** Full contract lifecycle (see section below)
 - **Bug Fixed:** Needs `await` on generator-based operation; requires `sPayload`/`sOwner` params
 
 ### #39 zetrix_sdk_create_log
 - **Status:** PASS
 - **Input:** topic=`test_event`, data=`hello from mcp test`
 - **TX Hash:** `0ddeefae8a775a615a74adf86cb5f93bf5a648ceafdbaee47d7cbaa480a0b725`
+
+---
+
+## 5.1 Contract Lifecycle Test (Deploy → Upgrade Code → Transfer Owner)
+
+Full end-to-end test of contract deployment with owner, code upgrade, and ownership transfer.
+
+### Step 1: Deploy contract with owner
+- **Payload:** hello/greet contract v1
+- **Owner:** `ZTX3RHaPmjknsxSTPaPzD8M1A7nU26vKzwqf3`
+- **TX Hash:** `d63f0ebdb9131a54eeb5b03996e6861e39cacaae2f107602be7ebb77a40b51f0`
+- **Contract Address:** `ZTX3Y5GyYUZDJfFU2GqB6kuuPwEDMDfLNLQc4`
+- **Status:** SUCCESS
+
+### Step 2: Upgrade contract code (v1 → v2)
+- **Input:** New payload with "v2" responses
+- **TX Hash:** `6f554e8c0c7f4b494831644d2a423c36b170bc12c1d746197edc0c340ebb49a0`
+- **Status:** SUCCESS
+
+### Step 3: Transfer contract ownership
+- **New Owner:** `ZTX3QSxLr1gCCuKJJyX4DirZiVBUZnhhM6szQ`
+- **TX Hash:** `c7902df9663be2d00ef91160a2a608bfaa2abe4f9bc97751eb8bbdd541c6c09a`
+- **Status:** SUCCESS
+
+### Verification
+```
+Contract ZTX3Y5GyYUZDJfFU2GqB6kuuPwEDMDfLNLQc4:
+  Code contains v2: true
+  Owner: ZTX3QSxLr1gCCuKJJyX4DirZiVBUZnhhM6szQ
+```
 
 ---
 
@@ -312,7 +344,7 @@
 
 ### #52 zetrix_contract_init_dev_environment
 - **Status:** SKIP
-- **Reason:** Runs `npx create-zetrix-tool` which creates files/directories on disk. Not suitable for automated testing.
+- **Reason:** Runs `npx create-zetrix-tool` which creates files/directories on disk
 
 ### #53 zetrix_contract_generate_advanced
 - **Status:** PASS
@@ -332,7 +364,7 @@
 | 1 | zetrix-client.ts | `submitTransaction` sends wrong payload format | Wrap in `items` array, parse `results[0]` |
 | 2 | zetrix-encryption.ts | `crypto_sign` signs hex string directly | Convert hex to `Uint8Array` before signing |
 | 3 | zetrix-encryption.ts | `crypto_verify` same issue as sign | Convert hex to `Uint8Array` for verify |
-| 4 | zetrix-sdk.ts | `invokeContract` uses `nonce: "auto"` | Fetch nonce explicitly via `getNonce` |
+| 4 | zetrix-sdk.ts | `invokeContract` uses `nonce: "auto"` (invalid) | Fetch nonce explicitly via `getNonce` |
 | 5 | zetrix-sdk.ts | `invokeContract` passes `amount` not `gasAmount` | Changed to `gasAmount` |
 | 6 | zetrix-sdk.ts | `invokeContract` missing `await` on generator op | Added `await` |
 | 7 | zetrix-sdk.ts | `invokeContractByAsset` missing `await` | Added `await` |
@@ -341,8 +373,10 @@
 | 10 | zetrix-client.ts | `getAccountMetadata` throws on error_code 2 | Return `[]` for missing key |
 | 11 | zetrix-client.ts | `getTransactionCache` throws on error_code 4 | Return empty result for no pending txs |
 | 12 | zetrix-client.ts | `multiQuery` reads wrong response field | Changed `result` to `results` |
-| 13 | zetrix-websocket.ts | WS client uses JSON but node uses protobuf | Full rewrite with protobuf encoding |
+| 13 | zetrix-websocket.ts | WS client uses JSON but node uses protobuf | Full rewrite with protobuf binary encoding |
 | 14 | zetrix-websocket.ts | Wrong `ChainMessageType` enum values | Fixed to match protocol (HELLO=10, etc.) |
+| 15 | zetrix-sdk.ts | `createContract` missing `owner` param | Added optional `owner` field |
+| 16 | zetrix-sdk.ts | `upgradeContract` hardcoded `sPayload: true, sOwner: false` | Dynamic based on provided params |
 
 ---
 
@@ -354,49 +388,56 @@ npm install
 ZETRIX_NETWORK=testnet
 ```
 
-### Quick Verification Commands
+### Verify All TX Hashes on Testnet
 
-**HTTP RPC:**
+All `error_code` values should be `0` (success):
+
 ```bash
-# Check node health
-curl -s https://test-node.zetrix.com/hello | jq .
-
-# Verify account
-curl -s "https://test-node.zetrix.com/getAccount?address=ZTX3RHaPmjknsxSTPaPzD8M1A7nU26vKzwqf3" | jq .
-```
-
-**Verify TX Hashes on Testnet:**
-```bash
-# Send gas tx
+# Send gas
 curl -s "https://test-node.zetrix.com/getTransactionHistory?hash=dc8149326693c170362ce1db313d92c487f0b69c4e2594d4de3d281c24de3c5a" | jq .result.transactions[0].error_code
 
-# Activate account tx
+# Activate account
 curl -s "https://test-node.zetrix.com/getTransactionHistory?hash=e798ee69c83337712373dbaa65a641403cf9c6a7f564b6a3bd93f54d5b960ff2" | jq .result.transactions[0].error_code
 
-# Issue asset tx
+# Set metadata
+curl -s "https://test-node.zetrix.com/getTransactionHistory?hash=05e8f81fb681745bca646facd72fdc66d39a7aad37296fbb163042c286726a30" | jq .result.transactions[0].error_code
+
+# Set privilege
+curl -s "https://test-node.zetrix.com/getTransactionHistory?hash=865f1971cc2a1ff77113f0b7afb90ce45d2d43572e033a13a044798770c47636" | jq .result.transactions[0].error_code
+
+# Issue asset (TST)
 curl -s "https://test-node.zetrix.com/getTransactionHistory?hash=3cfdb3552a6c9c9a6cdc90069a6480b13710f0fd60312a1031143c0b451a5acc" | jq .result.transactions[0].error_code
 
-# Send asset tx
+# Send asset (TST)
 curl -s "https://test-node.zetrix.com/getTransactionHistory?hash=17449a0baae466030296da4827af8b2b05aa1341374717573c7315f8ecb4eaca" | jq .result.transactions[0].error_code
 
-# Create contract tx
+# Create contract (without owner)
 curl -s "https://test-node.zetrix.com/getTransactionHistory?hash=5d7b0b68cfdad275baebb872ddb7bc9d6ffb207036be96bbb3f5d5bb0e5984d7" | jq .result.transactions[0].error_code
 
-# Invoke contract tx
+# Invoke contract
 curl -s "https://test-node.zetrix.com/getTransactionHistory?hash=676693184eb167ad3a5e18a7ec6785a787fe9b366dc5fb939aceb5ed1fcf9952" | jq .result.transactions[0].error_code
 
-# Create log tx
+# Invoke contract by asset
+curl -s "https://test-node.zetrix.com/getTransactionHistory?hash=ac51cae561d8fc0c969c43085ddab3c56c91e59d313de0e4301c8d5deccfdebc" | jq .result.transactions[0].error_code
+
+# Create log
 curl -s "https://test-node.zetrix.com/getTransactionHistory?hash=0ddeefae8a775a615a74adf86cb5f93bf5a648ceafdbaee47d7cbaa480a0b725" | jq .result.transactions[0].error_code
 
-# WebSocket submit tx
+# WebSocket submit
 curl -s "https://test-node.zetrix.com/getTransactionHistory?hash=8653fa062d62a84adcb0cabde0047d7c98b37b519d0b0151495a78482d8b94c9" | jq .result.transactions[0].error_code
+
+# Deploy contract with owner
+curl -s "https://test-node.zetrix.com/getTransactionHistory?hash=d63f0ebdb9131a54eeb5b03996e6861e39cacaae2f107602be7ebb77a40b51f0" | jq .result.transactions[0].error_code
+
+# Upgrade contract code
+curl -s "https://test-node.zetrix.com/getTransactionHistory?hash=6f554e8c0c7f4b494831644d2a423c36b170bc12c1d746197edc0c340ebb49a0" | jq .result.transactions[0].error_code
+
+# Transfer contract ownership
+curl -s "https://test-node.zetrix.com/getTransactionHistory?hash=c7902df9663be2d00ef91160a2a608bfaa2abe4f9bc97751eb8bbdd541c6c09a" | jq .result.transactions[0].error_code
 ```
 
-All `error_code` values should be `0` (success).
-
-**WebSocket Verification:**
+### WebSocket Verification
 ```bash
-# Test WS connectivity (requires ZETRIX_WS_URL env var for IP-based testing)
 ZETRIX_WS_URL=ws://18.143.233.37:7053 node --input-type=module -e "
 import { ZetrixWebSocketClient } from './dist/zetrix-websocket.js';
 const ws = new ZetrixWebSocketClient(process.env.ZETRIX_WS_URL);
@@ -419,5 +460,5 @@ process.exit(0);
 
 | Network | HTTP RPC | WebSocket |
 |---|---|---|
-| mainnet | `https://node.zetrix.com` | `wss://ws-node.zetrix.com` |
-| testnet | `https://test-node.zetrix.com` | `wss://test-ws-node.zetrix.com` |
+| Mainnet | `https://node.zetrix.com` | `wss://ws-node.zetrix.com` |
+| Testnet | `https://test-node.zetrix.com` | `wss://test-ws-node.zetrix.com` |
