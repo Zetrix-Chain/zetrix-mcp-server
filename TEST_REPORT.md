@@ -17,8 +17,8 @@
 | SDK Query | 5 | 0 | 0 | 5 |
 | SDK Transactions | 11 | 0 | 0 | 11 |
 | Crypto | 8 | 0 | 0 | 8 |
-| Smart Contract Dev | 6 | 0 | 1 | 7 |
-| **Total** | **54** | **0** | **1** | **55** |
+| Smart Contract Dev | 7 | 0 | 0 | 7 |
+| **Total** | **55** | **0** | **0** | **55** |
 
 ---
 
@@ -323,7 +323,7 @@ Contract ZTX3Y5GyYUZDJfFU2GqB6kuuPwEDMDfLNLQc4:
 
 ---
 
-## 7. Smart Contract Dev Tools (6/7 PASS, 1 SKIP)
+## 7. Smart Contract Dev Tools (7/7 PASS)
 
 ### #48 zetrix_contract_get_chain_functions
 - **Status:** PASS
@@ -343,8 +343,9 @@ Contract ZTX3Y5GyYUZDJfFU2GqB6kuuPwEDMDfLNLQc4:
 - **Result:** Returns ZTP20 token standard specification (1,672 chars)
 
 ### #52 zetrix_contract_init_dev_environment
-- **Status:** SKIP
-- **Reason:** Runs `npx create-zetrix-tool` which creates files/directories on disk
+- **Status:** PASS
+- **Input:** `contractName: test-zetrix-contract`, `workingDirectory: /tmp`
+- **Result:** Project created at `/tmp/test-zetrix-contract` with contracts, tests, scripts, utils directories
 
 ### #53 zetrix_contract_generate_advanced
 - **Status:** PASS
