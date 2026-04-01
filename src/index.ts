@@ -43,7 +43,7 @@ const zetrixContractGenerator = new ZetrixContractGenerator();
 
 // WebSocket URL mapping
 const WS_NETWORK_URLS: Record<ZetrixNetwork, string> = {
-  mainnet: "ws://node-ws.zetrix.com",
+  mainnet: "ws://ws-node.zetrix.com:7053",
   testnet: "ws://test-ws-node.zetrix.com:7053",
 };
 
