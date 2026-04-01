@@ -44,7 +44,7 @@ const zetrixContractGenerator = new ZetrixContractGenerator();
 // WebSocket URL mapping
 const WS_NETWORK_URLS: Record<ZetrixNetwork, string> = {
   mainnet: "ws://node-ws.zetrix.com",
-  testnet: "ws://test-node-ws.zetrix.com",
+  testnet: "ws://18.143.233.37:7053",
 };
 
 let zetrixWsClient: ZetrixWebSocketClient | null = null;
@@ -371,20 +371,16 @@ const tools: Tool[] = [
     inputSchema: {
       type: "object",
       properties: {
-        transaction: {
-          type: "object",
-          description: "Transaction object",
+        transactionBlob: {
+          type: "string",
+          description: "Serialized transaction blob (hex string from getTransactionBlob)",
         },
         signatures: {
           type: "array",
           description: "Array of signature objects with public_key and sign_data",
         },
-        trigger: {
-          type: "object",
-          description: "Optional trigger object",
-        },
       },
-      required: ["transaction", "signatures"],
+      required: ["transactionBlob", "signatures"],
     },
   },
   {
@@ -1519,9 +1515,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
         const wsClient = getWebSocketClient();
         const result = await wsClient.submitTransaction(
-          args.transaction,
-          args.signatures as Array<{ public_key: string; sign_data: string }>,
-          args.trigger
+          args.transactionBlob as string,
+          args.signatures as Array<{ public_key: string; sign_data: string }>
         );
         return {
           content: [
@@ -1566,7 +1561,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case "zetrix_ws_status": {
         const wsClient = getWebSocketClient();
-        const isConnected = wsClient.isConnected();
+        const isConnected = wsClient.isConnected;
         return {
           content: [
             {
