@@ -161,9 +161,12 @@ claude mcp add zetrix-testnet -s user -- npx -y zetrix-mcp-server \
   -e ZETRIX_WS_URL=wss://your-ws-node.example.com
 ```
 
-### Claude Desktop / JSON Config
+### Claude Desktop
 
-Add to your MCP configuration file:
+Edit your Claude Desktop configuration file:
+
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
 **Testnet:**
 ```json
@@ -195,7 +198,7 @@ Add to your MCP configuration file:
 }
 ```
 
-**Testnet with custom RPC and WebSocket URLs:**
+**With custom RPC and WebSocket URLs:**
 ```json
 {
   "mcpServers": {
@@ -204,30 +207,15 @@ Add to your MCP configuration file:
       "args": ["-y", "zetrix-mcp-server"],
       "env": {
         "ZETRIX_NETWORK": "testnet",
-        "ZETRIX_RPC_URL": "https://your-testnet-node.example.com",
-        "ZETRIX_WS_URL": "wss://your-testnet-ws.example.com"
+        "ZETRIX_RPC_URL": "https://your-node.example.com",
+        "ZETRIX_WS_URL": "wss://your-ws-node.example.com"
       }
     }
   }
 }
 ```
 
-**Mainnet with custom RPC and WebSocket URLs:**
-```json
-{
-  "mcpServers": {
-    "zetrix": {
-      "command": "npx",
-      "args": ["-y", "zetrix-mcp-server"],
-      "env": {
-        "ZETRIX_NETWORK": "mainnet",
-        "ZETRIX_RPC_URL": "https://your-mainnet-node.example.com",
-        "ZETRIX_WS_URL": "wss://your-mainnet-ws.example.com"
-      }
-    }
-  }
-}
-```
+After saving the config file, restart Claude Desktop for changes to take effect.
 
 > **Note:** `ZETRIX_RPC_URL` and `ZETRIX_WS_URL` override the default endpoints for the selected network. You can override just one or both. If not set, the defaults from the table above are used.
 
