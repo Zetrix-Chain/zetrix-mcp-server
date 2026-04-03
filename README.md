@@ -207,6 +207,28 @@ Edit your Claude Desktop configuration file:
 }
 ```
 
+**Both networks (mainnet + testnet):**
+```json
+{
+  "mcpServers": {
+    "zetrix-mainnet": {
+      "command": "npx",
+      "args": ["-y", "zetrix-mcp-server"],
+      "env": {
+        "ZETRIX_NETWORK": "mainnet"
+      }
+    },
+    "zetrix-testnet": {
+      "command": "npx",
+      "args": ["-y", "zetrix-mcp-server"],
+      "env": {
+        "ZETRIX_NETWORK": "testnet"
+      }
+    }
+  }
+}
+```
+
 **With custom RPC and WebSocket URLs:**
 ```json
 {
@@ -255,6 +277,28 @@ ZETRIX_TRANSPORT=http ZETRIX_PORT=3000 ZETRIX_NETWORK=testnet npx zetrix-mcp-ser
   "mcpServers": {
     "zetrix": {
       "url": "http://localhost:3000/mcp"
+    }
+  }
+}
+```
+
+**Both networks (mainnet + testnet):**
+
+Run two servers on different ports:
+```bash
+ZETRIX_TRANSPORT=http ZETRIX_PORT=3000 ZETRIX_NETWORK=mainnet npx zetrix-mcp-server &
+ZETRIX_TRANSPORT=http ZETRIX_PORT=3001 ZETRIX_NETWORK=testnet npx zetrix-mcp-server &
+```
+
+Then configure your MCP client:
+```json
+{
+  "mcpServers": {
+    "zetrix-mainnet": {
+      "url": "http://localhost:3000/mcp"
+    },
+    "zetrix-testnet": {
+      "url": "http://localhost:3001/mcp"
     }
   }
 }
