@@ -31,7 +31,7 @@ const ZETRIX_WS_URL = process.env.ZETRIX_WS_URL;
 const server = new Server(
   {
     name: "zetrix-mcp-server",
-    version: "1.0.15",
+    version: "1.0.16",
   },
   {
     capabilities: {
@@ -286,7 +286,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_submit_transaction",
-    description: "Submit signed transaction to blockchain for execution",
+    description: "Submit a pre-signed transaction blob to blockchain via HTTP RPC. IMPORTANT: This is a low-level tool that requires a pre-built transaction blob and signatures. For most use cases, prefer the zetrix_sdk_* transaction tools (e.g. zetrix_sdk_send_gas, zetrix_sdk_invoke_contract) which handle the full flow automatically.",
     inputSchema: {
       type: "object",
       properties: {
@@ -372,7 +372,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_ws_submit_transaction",
-    description: "Submit transaction via WebSocket and get real-time status updates",
+    description: "Submit a pre-signed transaction blob via WebSocket for real-time status updates. IMPORTANT: This is a low-level tool that requires an active WebSocket connection (via zetrix_ws_connect) and a pre-built transaction blob with signatures. For most use cases, prefer the zetrix_sdk_* transaction tools which handle the full flow automatically.",
     inputSchema: {
       type: "object",
       properties: {
@@ -492,7 +492,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_sdk_invoke_contract",
-    description: "Invoke a smart contract function with state change (requires private key)",
+    description: "Invoke a smart contract function with state change (requires private key). This tool automatically handles the full transaction flow: get nonce, evaluate fee, build blob, sign, and submit. Just provide the parameters and it will execute the complete transaction in one call.",
     inputSchema: {
       type: "object",
       properties: {
@@ -535,7 +535,7 @@ const tools: Tool[] = [
 
   {
     name: "zetrix_sdk_send_gas",
-    description: "Send native ZTX (gas) to another address using the SDK",
+    description: "Send native ZTX (gas) to another address. This tool automatically handles the full transaction flow: get nonce, evaluate fee, build blob, sign, and submit. Just provide the parameters and it will execute the complete transaction in one call.",
     inputSchema: {
       type: "object",
       properties: {
@@ -574,7 +574,7 @@ const tools: Tool[] = [
 
   {
     name: "zetrix_sdk_activate_account",
-    description: "Activate a new account on the Zetrix blockchain with an initial balance",
+    description: "Activate a new account on the Zetrix blockchain with an initial balance. This tool automatically handles the full transaction flow: get nonce, evaluate fee, build blob, sign, and submit. Just provide the parameters and it will execute the complete transaction in one call.",
     inputSchema: {
       type: "object",
       properties: {
@@ -612,7 +612,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_sdk_set_metadata",
-    description: "Set a key-value metadata entry on an account",
+    description: "Set a key-value metadata entry on an account. This tool automatically handles the full transaction flow: get nonce, evaluate fee, build blob, sign, and submit. Just provide the parameters and it will execute the complete transaction in one call.",
     inputSchema: {
       type: "object",
       properties: {
@@ -658,7 +658,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_sdk_set_privilege",
-    description: "Set account privilege including master weight, tx threshold, and signers",
+    description: "Set account privilege including master weight, tx threshold, and signers. This tool automatically handles the full transaction flow: get nonce, evaluate fee, build blob, sign, and submit. Just provide the parameters and it will execute the complete transaction in one call.",
     inputSchema: {
       type: "object",
       properties: {
@@ -718,7 +718,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_sdk_issue_asset",
-    description: "Issue a new custom asset/token on the Zetrix blockchain",
+    description: "Issue a new custom asset/token on the Zetrix blockchain. This tool automatically handles the full transaction flow: get nonce, evaluate fee, build blob, sign, and submit. Just provide the parameters and it will execute the complete transaction in one call.",
     inputSchema: {
       type: "object",
       properties: {
@@ -756,7 +756,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_sdk_send_asset",
-    description: "Transfer a custom asset/token to another address",
+    description: "Transfer a custom asset/token to another address. This tool automatically handles the full transaction flow: get nonce, evaluate fee, build blob, sign, and submit. Just provide the parameters and it will execute the complete transaction in one call.",
     inputSchema: {
       type: "object",
       properties: {
@@ -802,7 +802,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_sdk_create_contract",
-    description: "Deploy a new smart contract on the Zetrix blockchain",
+    description: "Deploy a new smart contract on the Zetrix blockchain. This tool automatically handles the full transaction flow: get nonce, evaluate fee, build blob, sign, and submit. Just provide the parameters and it will execute the complete transaction in one call.",
     inputSchema: {
       type: "object",
       properties: {
@@ -848,7 +848,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_sdk_invoke_contract_by_asset",
-    description: "Invoke a smart contract with an asset transfer",
+    description: "Invoke a smart contract with an asset transfer. This tool automatically handles the full transaction flow: get nonce, evaluate fee, build blob, sign, and submit. Just provide the parameters and it will execute the complete transaction in one call.",
     inputSchema: {
       type: "object",
       properties: {
@@ -898,7 +898,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_sdk_upgrade_contract",
-    description: "Upgrade a smart contract's code and/or owner. Provide payload to upgrade code, owner to change owner, or both.",
+    description: "Upgrade a smart contract's code and/or owner. Provide payload to upgrade code, owner to change owner, or both. This tool automatically handles the full transaction flow: get nonce, evaluate fee, build blob, sign, and submit. Just provide the parameters and it will execute the complete transaction in one call.",
     inputSchema: {
       type: "object",
       properties: {
@@ -940,7 +940,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_sdk_create_log",
-    description: "Create an event log on the Zetrix blockchain",
+    description: "Create an event log on the Zetrix blockchain. This tool automatically handles the full transaction flow: get nonce, evaluate fee, build blob, sign, and submit. Just provide the parameters and it will execute the complete transaction in one call.",
     inputSchema: {
       type: "object",
       properties: {
