@@ -146,6 +146,30 @@ All transaction tools use `evaluateFee` (testTransaction) for dynamic gas pricin
 | `ZETRIX_WS_URL` | Custom WebSocket endpoint (overrides network default) | — |
 | `ZETRIX_TRANSPORT` | Transport mode (`stdio` or `http`) | `stdio` |
 | `ZETRIX_PORT` | HTTP server port (only used when `ZETRIX_TRANSPORT=http`) | `3000` |
+| `ZETRIX_PRIVATE_KEY` | Default private key for signing transactions (optional, keeps key out of conversation) | — |
+| `ZETRIX_SOURCE_ADDRESS` | Default source address for transactions (optional) | — |
+
+### Secure Transactions (Recommended)
+
+By setting `ZETRIX_PRIVATE_KEY` and `ZETRIX_SOURCE_ADDRESS` as environment variables, your private key is never exposed in the conversation. The LLM can execute transactions like "send 0.01 ZETRIX to ZTX3..." without ever seeing your key.
+
+```json
+{
+  "mcpServers": {
+    "zetrix": {
+      "command": "npx",
+      "args": ["-y", "zetrix-mcp-server"],
+      "env": {
+        "ZETRIX_NETWORK": "testnet",
+        "ZETRIX_PRIVATE_KEY": "your-private-key-here",
+        "ZETRIX_SOURCE_ADDRESS": "your-zetrix-address-here"
+      }
+    }
+  }
+}
+```
+
+> **Note:** These are optional. If not set, the LLM will need to ask for or be given the private key and source address in the conversation. If set, they are used as defaults — you can still override them per-tool call if needed.
 
 ### Claude Code (CLI)
 

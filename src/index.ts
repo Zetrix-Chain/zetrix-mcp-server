@@ -32,8 +32,10 @@ const ZETRIX_RPC_URL = process.env.ZETRIX_RPC_URL;
 const ZETRIX_WS_URL = process.env.ZETRIX_WS_URL;
 const ZETRIX_TRANSPORT = process.env.ZETRIX_TRANSPORT || "stdio";
 const ZETRIX_PORT = parseInt(process.env.ZETRIX_PORT || "3000", 10);
+const ZETRIX_PRIVATE_KEY = process.env.ZETRIX_PRIVATE_KEY;
+const ZETRIX_SOURCE_ADDRESS = process.env.ZETRIX_SOURCE_ADDRESS;
 
-const MCP_VERSION = "1.0.19";
+const MCP_VERSION = "1.0.20";
 
 function createMcpServer(): Server {
   const srv = new Server(
@@ -518,11 +520,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address initiating the transaction. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
+          description: "The account address initiating the transaction. Optional if ZETRIX_SOURCE_ADDRESS environment variable is set. Otherwise if the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
-          description: "Private key for signing the transaction",
+          description: "Private key for signing the transaction. Optional if ZETRIX_PRIVATE_KEY environment variable is set.",
         },
         contractAddress: {
           type: "string",
@@ -561,11 +563,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The sender's Zetrix address. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
+          description: "The sender's Zetrix address. Optional if ZETRIX_SOURCE_ADDRESS environment variable is set. Otherwise if the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
-          description: "The sender's private key for signing",
+          description: "The sender's private key for signing. Optional if ZETRIX_PRIVATE_KEY environment variable is set.",
         },
         destAddress: {
           type: "string",
@@ -600,11 +602,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address funding the activation. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
+          description: "The account address funding the activation. Optional if ZETRIX_SOURCE_ADDRESS environment variable is set. Otherwise if the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the source account",
+          description: "Private key of the source account. Optional if ZETRIX_PRIVATE_KEY environment variable is set.",
         },
         destAddress: {
           type: "string",
@@ -638,11 +640,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address to set metadata on. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
+          description: "The account address to set metadata on. Optional if ZETRIX_SOURCE_ADDRESS environment variable is set. Otherwise if the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the account",
+          description: "Private key of the account. Optional if ZETRIX_PRIVATE_KEY environment variable is set.",
         },
         key: {
           type: "string",
@@ -684,11 +686,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address to modify privileges on. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
+          description: "The account address to modify privileges on. Optional if ZETRIX_SOURCE_ADDRESS environment variable is set. Otherwise if the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the account",
+          description: "Private key of the account. Optional if ZETRIX_PRIVATE_KEY environment variable is set.",
         },
         masterWeight: {
           type: "string",
@@ -744,11 +746,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The issuer's account address. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
+          description: "The issuer's account address. Optional if ZETRIX_SOURCE_ADDRESS environment variable is set. Otherwise if the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the issuer",
+          description: "Private key of the issuer. Optional if ZETRIX_PRIVATE_KEY environment variable is set.",
         },
         code: {
           type: "string",
@@ -782,11 +784,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The sender's account address. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
+          description: "The sender's account address. Optional if ZETRIX_SOURCE_ADDRESS environment variable is set. Otherwise if the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the sender",
+          description: "Private key of the sender. Optional if ZETRIX_PRIVATE_KEY environment variable is set.",
         },
         destAddress: {
           type: "string",
@@ -828,11 +830,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The deployer's account address. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
+          description: "The deployer's account address. Optional if ZETRIX_SOURCE_ADDRESS environment variable is set. Otherwise if the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the deployer",
+          description: "Private key of the deployer. Optional if ZETRIX_PRIVATE_KEY environment variable is set.",
         },
         payload: {
           type: "string",
@@ -874,11 +876,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The caller's account address. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
+          description: "The caller's account address. Optional if ZETRIX_SOURCE_ADDRESS environment variable is set. Otherwise if the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the caller",
+          description: "Private key of the caller. Optional if ZETRIX_PRIVATE_KEY environment variable is set.",
         },
         contractAddress: {
           type: "string",
@@ -924,11 +926,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The current contract owner's account address. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
+          description: "The current contract owner's account address. Optional if ZETRIX_SOURCE_ADDRESS environment variable is set. Otherwise if the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the current contract owner",
+          description: "Private key of the current contract owner. Optional if ZETRIX_PRIVATE_KEY environment variable is set.",
         },
         contractAddress: {
           type: "string",
@@ -966,11 +968,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address creating the log. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
+          description: "The account address creating the log. Optional if ZETRIX_SOURCE_ADDRESS environment variable is set. Otherwise if the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the account",
+          description: "Private key of the account. Optional if ZETRIX_PRIVATE_KEY environment variable is set.",
         },
         topic: {
           type: "string",
@@ -1686,7 +1688,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           contractAddress: args.contractAddress as string,
           optType: args.optType as number | undefined,
           input: args.input as string | undefined,
-          sourceAddress: args.sourceAddress as string | undefined,
+          sourceAddress: (args.sourceAddress as string | undefined) || ZETRIX_SOURCE_ADDRESS,
         });
         return {
           content: [
@@ -1703,8 +1705,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           throw new Error("Missing arguments");
         }
         const result = await zetrixSDK.invokeContract({
-          sourceAddress: args.sourceAddress as string,
-          privateKey: args.privateKey as string,
+          sourceAddress: (args.sourceAddress as string) || ZETRIX_SOURCE_ADDRESS!,
+          privateKey: (args.privateKey as string) || ZETRIX_PRIVATE_KEY!,
           contractAddress: args.contractAddress as string,
           amount: args.amount as string,
           input: args.input as string,
@@ -1727,8 +1729,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           throw new Error("Missing arguments");
         }
         const sendGasResult = await zetrixSDK.sendGas({
-          sourceAddress: args.sourceAddress as string,
-          privateKey: args.privateKey as string,
+          sourceAddress: (args.sourceAddress as string) || ZETRIX_SOURCE_ADDRESS!,
+          privateKey: (args.privateKey as string) || ZETRIX_PRIVATE_KEY!,
           destAddress: args.destAddress as string,
           amount: args.amount as string,
           gasPrice: args.gasPrice as string | undefined,
@@ -1748,8 +1750,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "zetrix_sdk_activate_account": {
         if (!args) throw new Error("Missing arguments");
         const activateResult = await zetrixSDK.activateAccount({
-          sourceAddress: args.sourceAddress as string,
-          privateKey: args.privateKey as string,
+          sourceAddress: (args.sourceAddress as string) || ZETRIX_SOURCE_ADDRESS!,
+          privateKey: (args.privateKey as string) || ZETRIX_PRIVATE_KEY!,
           destAddress: args.destAddress as string,
           initBalance: args.initBalance as string,
           gasPrice: args.gasPrice as string | undefined,
@@ -1764,8 +1766,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "zetrix_sdk_set_metadata": {
         if (!args) throw new Error("Missing arguments");
         const setMetadataResult = await zetrixSDK.setMetadata({
-          sourceAddress: args.sourceAddress as string,
-          privateKey: args.privateKey as string,
+          sourceAddress: (args.sourceAddress as string) || ZETRIX_SOURCE_ADDRESS!,
+          privateKey: (args.privateKey as string) || ZETRIX_PRIVATE_KEY!,
           key: args.key as string,
           value: args.value as string,
           version: args.version as string | undefined,
@@ -1782,8 +1784,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "zetrix_sdk_set_privilege": {
         if (!args) throw new Error("Missing arguments");
         const setPrivilegeResult = await zetrixSDK.setPrivilege({
-          sourceAddress: args.sourceAddress as string,
-          privateKey: args.privateKey as string,
+          sourceAddress: (args.sourceAddress as string) || ZETRIX_SOURCE_ADDRESS!,
+          privateKey: (args.privateKey as string) || ZETRIX_PRIVATE_KEY!,
           masterWeight: args.masterWeight as string | undefined,
           txThreshold: args.txThreshold as string | undefined,
           signers: args.signers as Array<{ address: string; weight: number }> | undefined,
@@ -1800,8 +1802,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "zetrix_sdk_issue_asset": {
         if (!args) throw new Error("Missing arguments");
         const issueResult = await zetrixSDK.issueAsset({
-          sourceAddress: args.sourceAddress as string,
-          privateKey: args.privateKey as string,
+          sourceAddress: (args.sourceAddress as string) || ZETRIX_SOURCE_ADDRESS!,
+          privateKey: (args.privateKey as string) || ZETRIX_PRIVATE_KEY!,
           code: args.code as string,
           assetAmount: args.assetAmount as string,
           gasPrice: args.gasPrice as string | undefined,
@@ -1816,8 +1818,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "zetrix_sdk_send_asset": {
         if (!args) throw new Error("Missing arguments");
         const sendAssetResult = await zetrixSDK.sendAsset({
-          sourceAddress: args.sourceAddress as string,
-          privateKey: args.privateKey as string,
+          sourceAddress: (args.sourceAddress as string) || ZETRIX_SOURCE_ADDRESS!,
+          privateKey: (args.privateKey as string) || ZETRIX_PRIVATE_KEY!,
           destAddress: args.destAddress as string,
           code: args.code as string,
           issuer: args.issuer as string,
@@ -1834,8 +1836,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "zetrix_sdk_create_contract": {
         if (!args) throw new Error("Missing arguments");
         const createContractResult = await zetrixSDK.createContract({
-          sourceAddress: args.sourceAddress as string,
-          privateKey: args.privateKey as string,
+          sourceAddress: (args.sourceAddress as string) || ZETRIX_SOURCE_ADDRESS!,
+          privateKey: (args.privateKey as string) || ZETRIX_PRIVATE_KEY!,
           payload: args.payload as string,
           initBalance: args.initBalance as string | undefined,
           initInput: args.initInput as string | undefined,
@@ -1852,8 +1854,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "zetrix_sdk_invoke_contract_by_asset": {
         if (!args) throw new Error("Missing arguments");
         const invokeByAssetResult = await zetrixSDK.invokeContractByAsset({
-          sourceAddress: args.sourceAddress as string,
-          privateKey: args.privateKey as string,
+          sourceAddress: (args.sourceAddress as string) || ZETRIX_SOURCE_ADDRESS!,
+          privateKey: (args.privateKey as string) || ZETRIX_PRIVATE_KEY!,
           contractAddress: args.contractAddress as string,
           code: args.code as string | undefined,
           issuer: args.issuer as string | undefined,
@@ -1871,8 +1873,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "zetrix_sdk_upgrade_contract": {
         if (!args) throw new Error("Missing arguments");
         const upgradeResult = await zetrixSDK.upgradeContract({
-          sourceAddress: args.sourceAddress as string,
-          privateKey: args.privateKey as string,
+          sourceAddress: (args.sourceAddress as string) || ZETRIX_SOURCE_ADDRESS!,
+          privateKey: (args.privateKey as string) || ZETRIX_PRIVATE_KEY!,
           contractAddress: args.contractAddress as string,
           payload: args.payload as string | undefined,
           owner: args.owner as string | undefined,
@@ -1888,8 +1890,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "zetrix_sdk_create_log": {
         if (!args) throw new Error("Missing arguments");
         const logResult = await zetrixSDK.createLog({
-          sourceAddress: args.sourceAddress as string,
-          privateKey: args.privateKey as string,
+          sourceAddress: (args.sourceAddress as string) || ZETRIX_SOURCE_ADDRESS!,
+          privateKey: (args.privateKey as string) || ZETRIX_PRIVATE_KEY!,
           topic: args.topic as string,
           data: args.data as string,
           gasPrice: args.gasPrice as string | undefined,
