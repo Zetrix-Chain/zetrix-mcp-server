@@ -254,7 +254,7 @@ After saving the config file, restart Claude Desktop for changes to take effect.
 
 Run the MCP server as an HTTP API server using the Streamable HTTP transport. This allows remote MCP clients to connect over the network.
 
-**Start the server:**
+**Start the server (defaults to mainnet):**
 ```bash
 ZETRIX_TRANSPORT=http ZETRIX_PORT=3000 npx zetrix-mcp-server
 ```
