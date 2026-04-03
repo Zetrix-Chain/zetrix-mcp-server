@@ -1,6 +1,6 @@
 # Zetrix MCP Server
 
-A comprehensive Model Context Protocol (MCP) server for interacting with the Zetrix blockchain. Provides **55 tools** across 7 categories — HTTP RPC, WebSocket (protobuf), SDK transactions, cryptography, and smart contract development.
+A comprehensive Model Context Protocol (MCP) server for interacting with the Zetrix blockchain. Provides **56 tools** across 7 categories — HTTP RPC, WebSocket (protobuf), SDK transactions, cryptography, and smart contract development. Supports both **stdio** and **HTTP** transport modes.
 
 ## Zetrix Currency Information
 
@@ -27,7 +27,13 @@ npm install -g zetrix-mcp-server
 - [EXAMPLES.md](docs/EXAMPLES.md) — Learn through 20+ examples
 - [TEST_REPORT.md](docs/TEST_REPORT.md) — Comprehensive test results for all 55 tools
 
-## Features (55 Tools)
+## Features (56 Tools)
+
+### General (1 tool)
+
+| Tool | Description |
+|---|---|
+| `zetrix_version` | Get MCP server version and network info |
 
 ### HTTP RPC (16 tools)
 
@@ -138,6 +144,8 @@ All transaction tools use `evaluateFee` (testTransaction) for dynamic gas pricin
 | `ZETRIX_NETWORK` | Network selection (`mainnet` or `testnet`) | `mainnet` |
 | `ZETRIX_RPC_URL` | Custom HTTP RPC endpoint (overrides network default) | — |
 | `ZETRIX_WS_URL` | Custom WebSocket endpoint (overrides network default) | — |
+| `ZETRIX_TRANSPORT` | Transport mode (`stdio` or `http`) | `stdio` |
+| `ZETRIX_PORT` | HTTP server port (only used when `ZETRIX_TRANSPORT=http`) | `3000` |
 
 ### Claude Code (CLI)
 
@@ -219,6 +227,40 @@ Edit your Claude Desktop configuration file:
 After saving the config file, restart Claude Desktop for changes to take effect.
 
 > **Note:** `ZETRIX_RPC_URL` and `ZETRIX_WS_URL` override the default endpoints for the selected network. You can override just one or both. If not set, the defaults from the table above are used.
+
+### HTTP Transport (API Server)
+
+Run the MCP server as an HTTP API server using the Streamable HTTP transport. This allows remote MCP clients to connect over the network.
+
+**Start the server:**
+```bash
+ZETRIX_TRANSPORT=http ZETRIX_PORT=3000 npx zetrix-mcp-server
+```
+
+**With testnet:**
+```bash
+ZETRIX_TRANSPORT=http ZETRIX_PORT=3000 ZETRIX_NETWORK=testnet npx zetrix-mcp-server
+```
+
+**Endpoints:**
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/mcp` | POST | MCP protocol endpoint (Streamable HTTP) |
+| `/health` | GET | Health check — returns `{ status, version, network }` |
+
+**Connect from an MCP client:**
+```json
+{
+  "mcpServers": {
+    "zetrix": {
+      "url": "http://localhost:3000/mcp"
+    }
+  }
+}
+```
+
+> **Note:** The HTTP transport uses the MCP Streamable HTTP specification. Any MCP client that supports `StreamableHTTP` transport can connect to it.
 
 ## Development
 

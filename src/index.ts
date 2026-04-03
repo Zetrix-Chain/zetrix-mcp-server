@@ -7,11 +7,14 @@ console.log = console.error;
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
   Tool,
 } from "@modelcontextprotocol/sdk/types.js";
+import { createServer, IncomingMessage, ServerResponse } from "node:http";
+import { randomUUID } from "node:crypto";
 import { ZetrixClient, ZetrixNetwork, ZETRIX_CONSTANTS } from "./zetrix-client.js";
 import { ZetrixWebSocketClient } from "./zetrix-websocket.js";
 import { ZetrixSDK } from "./zetrix-sdk.js";
@@ -27,20 +30,26 @@ import { ZetrixContractGenerator, ContractGenerationOptions } from "./zetrix-con
 const ZETRIX_NETWORK = (process.env.ZETRIX_NETWORK || "mainnet") as ZetrixNetwork;
 const ZETRIX_RPC_URL = process.env.ZETRIX_RPC_URL;
 const ZETRIX_WS_URL = process.env.ZETRIX_WS_URL;
+const ZETRIX_TRANSPORT = process.env.ZETRIX_TRANSPORT || "stdio";
+const ZETRIX_PORT = parseInt(process.env.ZETRIX_PORT || "3000", 10);
 
-const MCP_VERSION = "1.0.18";
+const MCP_VERSION = "1.0.19";
 
-const server = new Server(
-  {
-    name: "zetrix-mcp-server",
-    version: MCP_VERSION,
-  },
-  {
-    capabilities: {
-      tools: {},
+function createMcpServer(): Server {
+  const srv = new Server(
+    {
+      name: "zetrix-mcp-server",
+      version: MCP_VERSION,
     },
-  }
-);
+    {
+      capabilities: {
+        tools: {},
+      },
+    }
+  );
+  registerHandlers(srv);
+  return srv;
+}
 
 const zetrixClient = new ZetrixClient(ZETRIX_RPC_URL || ZETRIX_NETWORK);
 const zetrixSDK = new ZetrixSDK(ZETRIX_RPC_URL || ZETRIX_NETWORK);
@@ -1229,6 +1238,8 @@ const tools: Tool[] = [
   },
 ];
 
+function registerHandlers(server: Server) {
+
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return { tools };
 });
@@ -2262,10 +2273,62 @@ You can now:
   }
 });
 
+} // end registerHandlers
+
 async function main() {
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-  console.error("Zetrix MCP Server running on stdio");
+  if (ZETRIX_TRANSPORT === "http") {
+    // Each session gets its own Server + Transport pair for concurrent client support
+    const sessions = new Map<string, { server: Server; transport: StreamableHTTPServerTransport }>();
+
+    const httpServer = createServer(async (req: IncomingMessage, res: ServerResponse) => {
+      const url = new URL(req.url || "/", `http://localhost:${ZETRIX_PORT}`);
+
+      if (url.pathname === "/mcp") {
+        const sessionId = req.headers["mcp-session-id"] as string | undefined;
+
+        if (sessionId && sessions.has(sessionId)) {
+          // Existing session — reuse its transport
+          const session = sessions.get(sessionId)!;
+          await session.transport.handleRequest(req, res);
+        } else if (!sessionId && req.method === "POST") {
+          // New session — create dedicated Server + Transport
+          const sessionServer = createMcpServer();
+          const transport = new StreamableHTTPServerTransport({
+            sessionIdGenerator: () => randomUUID(),
+            onsessioninitialized: (id) => {
+              sessions.set(id, { server: sessionServer, transport });
+            },
+          });
+          transport.onclose = () => {
+            if (transport.sessionId) {
+              sessions.delete(transport.sessionId);
+            }
+          };
+          await sessionServer.connect(transport);
+          await transport.handleRequest(req, res);
+        } else {
+          res.writeHead(400, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: "Invalid or missing session ID" }));
+        }
+      } else if (url.pathname === "/health") {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ status: "ok", version: MCP_VERSION, network: ZETRIX_NETWORK, activeSessions: sessions.size }));
+      } else {
+        res.writeHead(404, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Not found. Use /mcp for MCP protocol or /health for status." }));
+      }
+    });
+
+    httpServer.listen(ZETRIX_PORT, () => {
+      console.error(`Zetrix MCP Server running on http://localhost:${ZETRIX_PORT}/mcp`);
+      console.error(`Health check: http://localhost:${ZETRIX_PORT}/health`);
+    });
+  } else {
+    const server = createMcpServer();
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+    console.error("Zetrix MCP Server running on stdio");
+  }
 }
 
 main().catch((error) => {
