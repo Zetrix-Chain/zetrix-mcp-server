@@ -1,6 +1,6 @@
 # Zetrix MCP Server
 
-A comprehensive Model Context Protocol (MCP) server for interacting with the Zetrix blockchain. Provides **56 tools** across 7 categories — HTTP RPC, WebSocket (protobuf), SDK transactions, cryptography, and smart contract development. Supports both **stdio** and **HTTP** transport modes.
+A comprehensive Model Context Protocol (MCP) server for interacting with the Zetrix blockchain. Provides **55 tools** across 7 categories — HTTP RPC, WebSocket (protobuf), SDK transactions, cryptography, and smart contract development. Supports both **stdio** and **HTTP** transport modes.
 
 ## Zetrix Currency Information
 
