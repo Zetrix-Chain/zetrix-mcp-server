@@ -35,7 +35,7 @@ const ZETRIX_PORT = parseInt(process.env.ZETRIX_PORT || "3000", 10);
 const ZETRIX_PRIVATE_KEY = process.env.ZETRIX_PRIVATE_KEY;
 const ZETRIX_SOURCE_ADDRESS = process.env.ZETRIX_SOURCE_ADDRESS;
 
-const MCP_VERSION = "1.0.21";
+const MCP_VERSION = "1.0.22";
 
 function createMcpServer(): Server {
   const srv = new Server(
@@ -520,11 +520,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address initiating the transaction. If not provided by the user, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
+          description: "The account address initiating the transaction. Do NOT ask the user for this. If the user does not provide a source address, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
         },
         privateKey: {
           type: "string",
-          description: "Private key for signing the transaction. If not provided by the user, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable if configured.",
+          description: "Private key for signing the transaction. Do NOT ask the user for this. If the user does not provide a private key, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable automatically.",
         },
         contractAddress: {
           type: "string",
@@ -563,11 +563,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The sender's Zetrix address. If not provided by the user, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
+          description: "The sender's Zetrix address. Do NOT ask the user for this. If the user does not provide a source address, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
         },
         privateKey: {
           type: "string",
-          description: "The sender's private key for signing. If not provided by the user, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable if configured.",
+          description: "The sender's private key for signing. Do NOT ask the user for this. If the user does not provide a private key, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable automatically.",
         },
         destAddress: {
           type: "string",
@@ -602,11 +602,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address funding the activation. If not provided by the user, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
+          description: "The account address funding the activation. Do NOT ask the user for this. If the user does not provide a source address, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the source account. If not provided by the user, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable if configured.",
+          description: "Private key of the source account. Do NOT ask the user for this. If the user does not provide a private key, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable automatically.",
         },
         destAddress: {
           type: "string",
@@ -640,11 +640,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address to set metadata on. If not provided by the user, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
+          description: "The account address to set metadata on. Do NOT ask the user for this. If the user does not provide a source address, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the account. If not provided by the user, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable if configured.",
+          description: "Private key of the account. Do NOT ask the user for this. If the user does not provide a private key, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable automatically.",
         },
         key: {
           type: "string",
@@ -686,11 +686,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address to modify privileges on. If not provided by the user, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
+          description: "The account address to modify privileges on. Do NOT ask the user for this. If the user does not provide a source address, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the account. If not provided by the user, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable if configured.",
+          description: "Private key of the account. Do NOT ask the user for this. If the user does not provide a private key, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable automatically.",
         },
         masterWeight: {
           type: "string",
@@ -746,11 +746,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The issuer's account address. If not provided by the user, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
+          description: "The issuer's account address. Do NOT ask the user for this. If the user does not provide a source address, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the issuer. If not provided by the user, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable if configured.",
+          description: "Private key of the issuer. Do NOT ask the user for this. If the user does not provide a private key, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable automatically.",
         },
         code: {
           type: "string",
@@ -784,11 +784,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The sender's account address. If not provided by the user, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
+          description: "The sender's account address. Do NOT ask the user for this. If the user does not provide a source address, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the sender. If not provided by the user, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable if configured.",
+          description: "Private key of the sender. Do NOT ask the user for this. If the user does not provide a private key, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable automatically.",
         },
         destAddress: {
           type: "string",
@@ -830,11 +830,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The deployer's account address. If not provided by the user, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
+          description: "The deployer's account address. Do NOT ask the user for this. If the user does not provide a source address, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the deployer. If not provided by the user, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable if configured.",
+          description: "Private key of the deployer. Do NOT ask the user for this. If the user does not provide a private key, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable automatically.",
         },
         payload: {
           type: "string",
@@ -876,11 +876,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The caller's account address. If not provided by the user, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
+          description: "The caller's account address. Do NOT ask the user for this. If the user does not provide a source address, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the caller. If not provided by the user, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable if configured.",
+          description: "Private key of the caller. Do NOT ask the user for this. If the user does not provide a private key, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable automatically.",
         },
         contractAddress: {
           type: "string",
@@ -926,11 +926,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The current contract owner's account address. If not provided by the user, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
+          description: "The current contract owner's account address. Do NOT ask the user for this. If the user does not provide a source address, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the current contract owner. If not provided by the user, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable if configured.",
+          description: "Private key of the current contract owner. Do NOT ask the user for this. If the user does not provide a private key, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable automatically.",
         },
         contractAddress: {
           type: "string",
@@ -968,11 +968,11 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address creating the log. If not provided by the user, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
+          description: "The account address creating the log. Do NOT ask the user for this. If the user does not provide a source address, omit this field — the server will use the ZETRIX_SOURCE_ADDRESS environment variable or derive it from the private key automatically.",
         },
         privateKey: {
           type: "string",
-          description: "Private key of the account. If not provided by the user, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable if configured.",
+          description: "Private key of the account. Do NOT ask the user for this. If the user does not provide a private key, omit this field — the server will use the ZETRIX_PRIVATE_KEY environment variable automatically.",
         },
         topic: {
           type: "string",
