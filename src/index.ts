@@ -28,7 +28,7 @@ const ZETRIX_NETWORK = (process.env.ZETRIX_NETWORK || "mainnet") as ZetrixNetwor
 const ZETRIX_RPC_URL = process.env.ZETRIX_RPC_URL;
 const ZETRIX_WS_URL = process.env.ZETRIX_WS_URL;
 
-const MCP_VERSION = "1.0.17";
+const MCP_VERSION = "1.0.18";
 
 const server = new Server(
   {
@@ -283,7 +283,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_get_transaction_blob",
-    description: "Serialize transaction data into hexadecimal format",
+    description: "Low-level tool to serialize transaction data into hexadecimal format. IMPORTANT: For standard transactions, prefer the zetrix_sdk_* tools (e.g. zetrix_sdk_send_gas, zetrix_sdk_invoke_contract) which handle everything automatically. If you must use this tool, you MUST first call zetrix_test_transaction to evaluate the correct fee_limit and gas_price. NEVER hardcode fee values — always use the evaluated values from zetrix_test_transaction.",
     inputSchema: {
       type: "object",
       properties: {
@@ -297,7 +297,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_submit_transaction",
-    description: "Submit a pre-signed transaction blob to blockchain via HTTP RPC. IMPORTANT: This is a low-level tool that requires a pre-built transaction blob and signatures. For most use cases, prefer the zetrix_sdk_* transaction tools (e.g. zetrix_sdk_send_gas, zetrix_sdk_invoke_contract) which handle the full flow automatically.",
+    description: "Submit a pre-signed transaction blob to blockchain via HTTP RPC. IMPORTANT: For standard transactions, prefer the zetrix_sdk_* tools (e.g. zetrix_sdk_send_gas, zetrix_sdk_invoke_contract) which handle everything automatically. If you must use this tool, you MUST have followed these steps in order: 1) zetrix_get_account to get nonce, 2) zetrix_test_transaction to evaluate fee_limit and gas_price, 3) zetrix_get_transaction_blob to build the blob, 4) zetrix_crypto_sign to sign the blob, then 5) this tool to submit.",
     inputSchema: {
       type: "object",
       properties: {
@@ -356,7 +356,7 @@ const tools: Tool[] = [
   },
   {
     name: "zetrix_test_transaction",
-    description: "Evaluate transaction fees without blockchain submission",
+    description: "Evaluate transaction fees without blockchain submission. Use this to get the correct fee_limit and gas_price before calling zetrix_get_transaction_blob. NEVER skip this step when building transactions manually — always use the evaluated values instead of hardcoding fees, unless the user explicitly provides their own gas_price and fee_limit values.",
     inputSchema: {
       type: "object",
       properties: {
@@ -509,7 +509,7 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address initiating the transaction",
+          description: "The account address initiating the transaction. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
@@ -529,11 +529,11 @@ const tools: Tool[] = [
         },
         gasPrice: {
           type: "string",
-          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional gas price in ZETA. Only provide this if the user explicitly specifies a gas price value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct gas price automatically.",
         },
         feeLimit: {
           type: "string",
-          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional fee limit in ZETA. Only provide this if the user explicitly specifies a fee limit value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct fee limit automatically.",
         },
         metadata: {
           type: "string",
@@ -552,7 +552,7 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The sender's Zetrix address",
+          description: "The sender's Zetrix address. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
@@ -568,11 +568,11 @@ const tools: Tool[] = [
         },
         gasPrice: {
           type: "string",
-          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional gas price in ZETA. Only provide this if the user explicitly specifies a gas price value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct gas price automatically.",
         },
         feeLimit: {
           type: "string",
-          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional fee limit in ZETA. Only provide this if the user explicitly specifies a fee limit value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct fee limit automatically.",
         },
         metadata: {
           type: "string",
@@ -591,7 +591,7 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address funding the activation",
+          description: "The account address funding the activation. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
@@ -607,11 +607,11 @@ const tools: Tool[] = [
         },
         gasPrice: {
           type: "string",
-          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional gas price in ZETA. Only provide this if the user explicitly specifies a gas price value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct gas price automatically.",
         },
         feeLimit: {
           type: "string",
-          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional fee limit in ZETA. Only provide this if the user explicitly specifies a fee limit value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct fee limit automatically.",
         },
         metadata: {
           type: "string",
@@ -629,7 +629,7 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address to set metadata on",
+          description: "The account address to set metadata on. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
@@ -653,11 +653,11 @@ const tools: Tool[] = [
         },
         gasPrice: {
           type: "string",
-          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional gas price in ZETA. Only provide this if the user explicitly specifies a gas price value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct gas price automatically.",
         },
         feeLimit: {
           type: "string",
-          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional fee limit in ZETA. Only provide this if the user explicitly specifies a fee limit value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct fee limit automatically.",
         },
         metadata: {
           type: "string",
@@ -675,7 +675,7 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address to modify privileges on",
+          description: "The account address to modify privileges on. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
@@ -713,11 +713,11 @@ const tools: Tool[] = [
         },
         gasPrice: {
           type: "string",
-          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional gas price in ZETA. Only provide this if the user explicitly specifies a gas price value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct gas price automatically.",
         },
         feeLimit: {
           type: "string",
-          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional fee limit in ZETA. Only provide this if the user explicitly specifies a fee limit value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct fee limit automatically.",
         },
         metadata: {
           type: "string",
@@ -735,7 +735,7 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The issuer's account address",
+          description: "The issuer's account address. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
@@ -751,11 +751,11 @@ const tools: Tool[] = [
         },
         gasPrice: {
           type: "string",
-          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional gas price in ZETA. Only provide this if the user explicitly specifies a gas price value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct gas price automatically.",
         },
         feeLimit: {
           type: "string",
-          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional fee limit in ZETA. Only provide this if the user explicitly specifies a fee limit value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct fee limit automatically.",
         },
         metadata: {
           type: "string",
@@ -773,7 +773,7 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The sender's account address",
+          description: "The sender's account address. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
@@ -797,11 +797,11 @@ const tools: Tool[] = [
         },
         gasPrice: {
           type: "string",
-          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional gas price in ZETA. Only provide this if the user explicitly specifies a gas price value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct gas price automatically.",
         },
         feeLimit: {
           type: "string",
-          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional fee limit in ZETA. Only provide this if the user explicitly specifies a fee limit value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct fee limit automatically.",
         },
         metadata: {
           type: "string",
@@ -819,7 +819,7 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The deployer's account address",
+          description: "The deployer's account address. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
@@ -843,11 +843,11 @@ const tools: Tool[] = [
         },
         gasPrice: {
           type: "string",
-          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional gas price in ZETA. Only provide this if the user explicitly specifies a gas price value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct gas price automatically.",
         },
         feeLimit: {
           type: "string",
-          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional fee limit in ZETA. Only provide this if the user explicitly specifies a fee limit value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct fee limit automatically.",
         },
         metadata: {
           type: "string",
@@ -865,7 +865,7 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The caller's account address",
+          description: "The caller's account address. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
@@ -893,11 +893,11 @@ const tools: Tool[] = [
         },
         gasPrice: {
           type: "string",
-          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional gas price in ZETA. Only provide this if the user explicitly specifies a gas price value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct gas price automatically.",
         },
         feeLimit: {
           type: "string",
-          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional fee limit in ZETA. Only provide this if the user explicitly specifies a fee limit value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct fee limit automatically.",
         },
         metadata: {
           type: "string",
@@ -915,7 +915,7 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The current contract owner's account address",
+          description: "The current contract owner's account address. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
@@ -935,11 +935,11 @@ const tools: Tool[] = [
         },
         gasPrice: {
           type: "string",
-          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional gas price in ZETA. Only provide this if the user explicitly specifies a gas price value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct gas price automatically.",
         },
         feeLimit: {
           type: "string",
-          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional fee limit in ZETA. Only provide this if the user explicitly specifies a fee limit value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct fee limit automatically.",
         },
         metadata: {
           type: "string",
@@ -957,7 +957,7 @@ const tools: Tool[] = [
       properties: {
         sourceAddress: {
           type: "string",
-          description: "The account address creating the log",
+          description: "The account address creating the log. If the user does not provide this, derive it by calling zetrix_crypto_get_public_key with the privateKey, then zetrix_crypto_get_address with the result.",
         },
         privateKey: {
           type: "string",
@@ -973,11 +973,11 @@ const tools: Tool[] = [
         },
         gasPrice: {
           type: "string",
-          description: "Optional gas price override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional gas price in ZETA. Only provide this if the user explicitly specifies a gas price value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct gas price automatically.",
         },
         feeLimit: {
           type: "string",
-          description: "Optional fee limit override in ZETA (default: evaluated from testTransaction)",
+          description: "Optional fee limit in ZETA. Only provide this if the user explicitly specifies a fee limit value. NEVER use values from previous transactions or conversation history — if not provided by the user, leave this empty and the tool will evaluate the correct fee limit automatically.",
         },
         metadata: {
           type: "string",
