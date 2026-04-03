@@ -28,10 +28,12 @@ const ZETRIX_NETWORK = (process.env.ZETRIX_NETWORK || "mainnet") as ZetrixNetwor
 const ZETRIX_RPC_URL = process.env.ZETRIX_RPC_URL;
 const ZETRIX_WS_URL = process.env.ZETRIX_WS_URL;
 
+const MCP_VERSION = "1.0.17";
+
 const server = new Server(
   {
     name: "zetrix-mcp-server",
-    version: "1.0.16",
+    version: MCP_VERSION,
   },
   {
     capabilities: {
@@ -63,6 +65,15 @@ function getWebSocketClient(): ZetrixWebSocketClient {
 }
 
 const tools: Tool[] = [
+  {
+    name: "zetrix_version",
+    description: "Get the current version of the Zetrix MCP server. Use this when the user asks about the MCP version.",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      required: [],
+    },
+  },
   {
     name: "zetrix_check_health",
     description: "Check the health status of the Zetrix node",
@@ -1227,6 +1238,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
 
     switch (name) {
+      case "zetrix_version": {
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({ name: "zetrix-mcp-server", version: MCP_VERSION, network: ZETRIX_NETWORK }, null, 2),
+            },
+          ],
+        };
+      }
+
       case "zetrix_check_health": {
         const result = await zetrixClient.checkHealth();
         return {
