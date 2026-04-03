@@ -276,6 +276,7 @@ ZETRIX_TRANSPORT=http ZETRIX_PORT=3000 ZETRIX_NETWORK=testnet npx zetrix-mcp-ser
 {
   "mcpServers": {
     "zetrix": {
+      "type": "http",
       "url": "http://localhost:3000/mcp"
     }
   }
@@ -295,9 +296,11 @@ Then configure your MCP client:
 {
   "mcpServers": {
     "zetrix-mainnet": {
+      "type": "http",
       "url": "http://localhost:3000/mcp"
     },
     "zetrix-testnet": {
+      "type": "http",
       "url": "http://localhost:3001/mcp"
     }
   }
