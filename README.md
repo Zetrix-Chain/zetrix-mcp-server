@@ -306,6 +306,19 @@ Then configure your MCP client:
 
 > **Note:** The HTTP transport uses the MCP Streamable HTTP specification. Any MCP client that supports `StreamableHTTP` transport can connect to it.
 
+**Server logs:**
+
+The server logs to stderr. To view logs, run in the foreground or redirect to a file:
+
+```bash
+# Foreground — logs show directly in terminal
+ZETRIX_TRANSPORT=http ZETRIX_PORT=3000 npx zetrix-mcp-server
+
+# Background with logs to file
+ZETRIX_TRANSPORT=http ZETRIX_PORT=3000 npx zetrix-mcp-server 2> server.log &
+tail -f server.log
+```
+
 ## Development
 
 ### Project Structure
