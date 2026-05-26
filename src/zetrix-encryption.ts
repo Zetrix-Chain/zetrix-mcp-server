@@ -261,6 +261,10 @@ export class ZetrixEncryption {
 
     return new Promise((resolve, reject) => {
       try {
+        // Accept JSON string input (users may paste the encrypt tool's output as a string)
+        if (typeof encryptedData === 'string') {
+          try { encryptedData = JSON.parse(encryptedData); } catch { /* leave as-is */ }
+        }
         // Use decrypt1 for the new string-based format (cypher_text/aesctr_iv/scrypt_params),
         // fall back to decrypt for the legacy raw CryptoJS object format.
         const decryptFn = encryptedData.cypher_text

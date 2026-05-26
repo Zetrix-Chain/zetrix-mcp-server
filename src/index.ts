@@ -35,7 +35,7 @@ const ZETRIX_PORT = parseInt(process.env.ZETRIX_PORT || "3000", 10);
 const ZETRIX_PRIVATE_KEY = process.env.ZETRIX_PRIVATE_KEY;
 const ZETRIX_SOURCE_ADDRESS = process.env.ZETRIX_SOURCE_ADDRESS;
 
-const MCP_VERSION = "1.0.24";
+const MCP_VERSION = "1.0.25";
 
 function createMcpServer(): Server {
   const srv = new Server(
@@ -1121,7 +1121,7 @@ const tools: Tool[] = [
       properties: {
         encryptedData: {
           type: "string",
-          description: "The encrypted keystore data",
+          description: "The encrypted keystore data as a JSON string (the full output from zetrix_crypto_encrypt_key)",
         },
         password: {
           type: "string",
