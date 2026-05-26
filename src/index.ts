@@ -35,7 +35,7 @@ const ZETRIX_PORT = parseInt(process.env.ZETRIX_PORT || "3000", 10);
 const ZETRIX_PRIVATE_KEY = process.env.ZETRIX_PRIVATE_KEY;
 const ZETRIX_SOURCE_ADDRESS = process.env.ZETRIX_SOURCE_ADDRESS;
 
-const MCP_VERSION = "1.0.22";
+const MCP_VERSION = "1.0.23";
 
 function createMcpServer(): Server {
   const srv = new Server(

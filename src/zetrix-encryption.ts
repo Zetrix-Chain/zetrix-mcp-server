@@ -220,9 +220,11 @@ export class ZetrixEncryption {
       try {
         this.keystore.encrypt(privateKey, password, (result: any) => {
           if (result) {
-            // The library returns an object with encrypted data
-            // Return as-is for decrypt to consume
-            resolve(result);
+            // Strip circular $super references from the Encryptor object before returning
+            const safeResult = JSON.parse(
+              JSON.stringify(result, (key, val) => key === '$super' ? undefined : val)
+            );
+            resolve(safeResult);
           } else {
             reject(new Error("Encryption failed: No data returned"));
           }
