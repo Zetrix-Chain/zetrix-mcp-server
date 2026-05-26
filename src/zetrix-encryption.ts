@@ -220,11 +220,19 @@ export class ZetrixEncryption {
       try {
         this.keystore.encrypt(privateKey, password, (result: any) => {
           if (result) {
-            // Strip circular $super references from the Encryptor object before returning
-            const safeResult = JSON.parse(
-              JSON.stringify(result, (key, val) => key === '$super' ? undefined : val)
-            );
-            resolve(safeResult);
+            // Convert CryptoJS/sjcl objects to plain strings while prototype methods are still available.
+            // This avoids circular $super references and produces a clean user-readable format
+            // that is also accepted by keystore.decrypt1 for decryption.
+            const opensslStr = result.encrypted.toString(); // CipherParams → OpenSSL Base64 string
+            const cypher_text = Buffer.from(opensslStr).toString('base64');
+            const saltHex = (result.salt as number[]).map((n: number) => (n >>> 0).toString(16).padStart(8, '0')).join('');
+            const ivHex = (result.iv as number[]).map((n: number) => (n >>> 0).toString(16).padStart(8, '0')).join('');
+            resolve({
+              cypher_text,
+              aesctr_iv: ivHex,
+              scrypt_params: { n: 16384, r: 8, p: 1, salt: saltHex },
+              version: 2,
+            });
           } else {
             reject(new Error("Encryption failed: No data returned"));
           }
@@ -253,8 +261,12 @@ export class ZetrixEncryption {
 
     return new Promise((resolve, reject) => {
       try {
-        // The decrypt function accepts the object directly
-        this.keystore.decrypt(encryptedData, password, (decrypted: string) => {
+        // Use decrypt1 for the new string-based format (cypher_text/aesctr_iv/scrypt_params),
+        // fall back to decrypt for the legacy raw CryptoJS object format.
+        const decryptFn = encryptedData.cypher_text
+          ? this.keystore.decrypt1
+          : this.keystore.decrypt;
+        decryptFn(encryptedData, password, (decrypted: string) => {
           if (decrypted) {
             resolve(decrypted);
           } else {
